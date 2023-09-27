@@ -9,7 +9,8 @@ type ModelJson struct {
 }
 
 type Columns struct {
-	Field string `json:"field"`
+	Field  string `json:"field"`
+	Format string `json:"format"`
 }
 
 type Joins struct {

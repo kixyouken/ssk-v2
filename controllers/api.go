@@ -10,7 +10,7 @@ import (
 //
 //	@param c
 func Get(c *gin.Context) {
-	table := c.Param("model")
+	table := c.Param("table")
 	tableJson := services.TableServices.GetTableFile(c, table)
 	modelJson := services.ModelServices.GetModelFile(c, tableJson.Model)
 	columns := services.ModelServices.GetModelColumns(c, *modelJson)
@@ -30,6 +30,10 @@ func Get(c *gin.Context) {
 
 	if modelJson.Withs != nil && len(modelJson.Withs) > 0 {
 		services.ResultServices.HandleModelWiths(c, result, *modelJson)
+	}
+
+	if modelJson.Columns != nil && len(modelJson.Columns) > 0 {
+		services.ResultServices.HandleModelFieldFormat(c, result, *modelJson)
 	}
 
 	c.JSON(200, gin.H{
