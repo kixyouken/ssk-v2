@@ -79,3 +79,25 @@ func (s *sModelServices) GetModelJoinsColumns(c *gin.Context, model models.Model
 
 	return columns
 }
+
+func (s *sModelServices) GetModelWithsColumns(c *gin.Context, model models.ModelJson) []string {
+	columns := []string{}
+	for _, value := range model.Withs {
+		for _, v := range value.Columns {
+			columns = append(columns, v.Field)
+		}
+	}
+
+	return columns
+}
+
+func (s *sModelServices) GetModelWithsOrders(c *gin.Context, model models.ModelJson) []string {
+	orders := []string{}
+	for _, value := range model.Withs {
+		for _, v := range value.Orders {
+			orders = append(orders, v.Field+" "+strings.ToUpper(v.Sort))
+		}
+	}
+
+	return orders
+}

@@ -25,6 +25,10 @@ func Get(c *gin.Context) {
 		services.DbService.Get(c, modelJson.Table, &result, columns, orders, joins, "")
 	}
 
+	if modelJson.Withs != nil && len(modelJson.Withs) > 0 {
+		services.ResultServices.GetWiths(c, result, *modelJson)
+	}
+
 	c.JSON(200, gin.H{
 		"message": "Get",
 		"data":    result,

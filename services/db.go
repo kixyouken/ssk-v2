@@ -42,6 +42,20 @@ func (s *sDbServices) Count(c *gin.Context, table string, join []string, search 
 	return count
 }
 
+func (s *sDbServices) HasOne(c *gin.Context, table string, out interface{}, column interface{}, search interface{}) error {
+	return db.Table(table).Where(search).
+		Select(column).
+		Limit(1).
+		Find(out).Error
+}
+
+func (s *sDbServices) HasMany(c *gin.Context, table string, out interface{}, column interface{}, order string, search interface{}) error {
+	return db.Table(table).Where(search).
+		Scopes(s.Order(order)).
+		Select(column).
+		Find(out).Error
+}
+
 func (s *sDbServices) Read(c *gin.Context) {
 
 }
