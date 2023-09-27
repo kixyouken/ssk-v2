@@ -1,16 +1,9 @@
 {
     "name": "用户表格",
     "model": "users",
-    "columns": [
-       
-    ],
-    "orders": [
-        {
-            "field": "id",
-            "sort": "desc"
-        },
-        {
-            "field": "updated_by"
-        }
-    ]
+    "columns": [],
+    "orders": [],
+    "page": 5,
+    "limit": 2,
+    "paginate": "true"
 }

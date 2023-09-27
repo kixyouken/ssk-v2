@@ -21,15 +21,25 @@ var ResultServices = sResultServices{}
 func (s *sResultServices) HandleModelWiths(c *gin.Context, result []map[string]interface{}, model models.ModelJson) {
 	for _, value := range result {
 		for _, v := range model.Withs {
-			columns := ModelServices.GetModelWithsColumns(c, model)
-			if v.Has == "hasOne" {
-				withResult := map[string]interface{}{}
-				DbService.HasOne(c, v.Table, &withResult, columns, map[string]interface{}{v.Foreign: value[v.Key]})
-				value["with_"+v.Table] = withResult
-			} else if v.Has == "hasMany" {
-				withResult := []map[string]interface{}{}
-				DbService.HasMany(c, v.Table, &withResult, columns, "", map[string]interface{}{v.Foreign: value[v.Key]})
-				value["with_"+v.Table] = withResult
+			if value[v.Key] != nil {
+				columns := ModelServices.GetModelWithsColumns(c, model)
+				if v.Has == "hasOne" {
+					withResult := map[string]interface{}{}
+					DbService.HasOne(c, v.Table, &withResult, columns, map[string]interface{}{v.Foreign: value[v.Key]})
+					value["with_"+v.Table] = withResult
+				} else if v.Has == "hasMany" {
+					withResult := []map[string]interface{}{}
+					DbService.HasMany(c, v.Table, &withResult, columns, "", map[string]interface{}{v.Foreign: value[v.Key]})
+					value["with_"+v.Table] = withResult
+				}
+			} else {
+				if v.Has == "hasOne" {
+					withResult := map[string]interface{}{}
+					value["with_"+v.Table] = withResult
+				} else if v.Has == "hasMany" {
+					withResult := []map[string]interface{}{}
+					value["with_"+v.Table] = withResult
+				}
 			}
 		}
 	}

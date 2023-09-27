@@ -19,7 +19,7 @@ func Get(c *gin.Context) {
 
 	var count int64
 	var result []map[string]interface{}
-	if tableJson.Page == "true" {
+	if tableJson.Paginate == "true" {
 		count = services.DbService.Count(c, modelJson.Table, joins, "")
 		if count > 0 {
 			services.DbService.Page(c, modelJson.Table, &result, columns, orders, joins, "")
@@ -34,6 +34,7 @@ func Get(c *gin.Context) {
 
 	if modelJson.Columns != nil && len(modelJson.Columns) > 0 {
 		services.ResultServices.HandleModelFieldFormat(c, result, *modelJson)
+		count = int64(len(result))
 	}
 
 	c.JSON(200, gin.H{

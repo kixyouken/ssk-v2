@@ -140,17 +140,24 @@ func (s *sDbServices) Order(order string) func(db *gorm.DB) *gorm.DB {
 //	@return func(db *gorm.DB) *gorm.DB
 func (s *sDbServices) Paginate(c *gin.Context) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
-		page, _ := strconv.Atoi(c.Query("page"))
-		if page < 0 {
+		table := c.Param("table")
+		tableJson := TableServices.GetTableFile(c, table)
+
+		page := tableJson.Page
+		if page <= 0 {
 			page = 1
 		}
-
-		limit, _ := strconv.Atoi(c.Query("limit"))
-		switch {
-		case limit > 100:
-			limit = 100
-		case limit <= 0:
+		urlPage, _ := strconv.Atoi(c.Query("page"))
+		if urlPage > 0 {
+			page = urlPage
+		}
+		limit := tableJson.Limit
+		if limit <= 0 {
 			limit = 10
+		}
+		urlLimit, _ := strconv.Atoi(c.Query("limit"))
+		if urlLimit > 0 {
+			limit = urlLimit
 		}
 
 		offset := (page - 1) * limit
