@@ -28,9 +28,10 @@ func (s *sTableServices) GetTableFile(c *gin.Context, table string) *tables.Tabl
 }
 
 func (s *sTableServices) GetTableOrders(c *gin.Context, table tables.TableJson) string {
+	model := ModelServices.GetModelFile(c, table.Model)
 	orders := []string{}
 	for _, v := range table.Orders {
-		orders = append(orders, v.Field+" "+strings.ToUpper(v.Sort))
+		orders = append(orders, model.Table+"."+v.Field+" "+strings.ToUpper(v.Sort))
 	}
 
 	return strings.Join(orders, ",")

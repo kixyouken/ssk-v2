@@ -12,16 +12,17 @@ func Get(c *gin.Context) {
 	modelJson := services.ModelServices.GetModelFile(c, tableJson.Model)
 	columns := services.ModelServices.GetModelColumns(c, *modelJson)
 	orders := services.TableServices.GetTableOrders(c, *tableJson)
+	joins := services.ModelServices.GetModelJoins(c, *modelJson)
 
 	var count int64
 	var result []map[string]interface{}
 	if tableJson.Page == "true" {
-		count = services.DbService.Count(c, modelJson.Table, []string{}, "")
+		count = services.DbService.Count(c, modelJson.Table, joins, "")
 		if count > 0 {
-			services.DbService.Page(c, modelJson.Table, &result, columns, orders, []string{}, "")
+			services.DbService.Page(c, modelJson.Table, &result, columns, orders, joins, "")
 		}
 	} else {
-		services.DbService.Get(c, modelJson.Table, &result, columns, orders, []string{}, "")
+		services.DbService.Get(c, modelJson.Table, &result, columns, orders, joins, "")
 	}
 
 	c.JSON(200, gin.H{

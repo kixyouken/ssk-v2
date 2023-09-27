@@ -8,7 +8,9 @@
             "key": "master_university_id",
             "join": "left",
             "columns": [
-                
+                {
+                    "field": "name"
+                }
             ]
         }
     ],
