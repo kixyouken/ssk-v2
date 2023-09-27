@@ -9,12 +9,27 @@ import (
 func Get(c *gin.Context) {
 	table := c.Param("model")
 	tableJson := services.TableServices.GetTableFile(c, table)
-	result := []map[string]interface{}{}
-	services.DbService.Get(c, tableJson.Model, &result, "*", "", []string{}, "")
+	modelJson := services.ModelServices.GetModelFile(c, tableJson.Model)
+	columns := services.ModelServices.GetModelColumns(c, *modelJson)
+	orders := services.TableServices.GetTableOrders(c, *tableJson)
+
+	var count int64
+	var result []map[string]interface{}
+	if tableJson.Page == "true" {
+		count = services.DbService.Count(c, modelJson.Table, []string{}, "")
+		if count > 0 {
+			services.DbService.Page(c, modelJson.Table, &result, columns, orders, []string{}, "")
+		}
+	} else {
+		services.DbService.Get(c, modelJson.Table, &result, columns, orders, []string{}, "")
+	}
+
 	c.JSON(200, gin.H{
 		"message": "Get",
 		"data":    result,
+		"count":   count,
 		"table":   tableJson,
+		"orders":  orders,
 	})
 }
 

@@ -15,6 +15,8 @@ func GetRouter() *gin.Engine {
 	admin := r.Group("admin")
 	{
 		admin.GET("/model/:model", controllers.GetModel)
+		admin.GET("/table/:table", controllers.GetTable)
+		admin.GET("form/:form", controllers.GetForm)
 	}
 
 	api := r.Group("api")

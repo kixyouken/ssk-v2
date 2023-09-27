@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"os"
 	"ssk-v2/jsons/tables"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -24,4 +25,13 @@ func (s *sTableServices) GetTableFile(c *gin.Context, table string) *tables.Tabl
 	json.Unmarshal(body, &tableJson)
 
 	return &tableJson
+}
+
+func (s *sTableServices) GetTableOrders(c *gin.Context, table tables.TableJson) string {
+	orders := []string{}
+	for _, v := range table.Orders {
+		orders = append(orders, v.Field+" "+strings.ToUpper(v.Sort))
+	}
+
+	return strings.Join(orders, ",")
 }

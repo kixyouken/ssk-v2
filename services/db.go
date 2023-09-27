@@ -18,7 +18,7 @@ func (s *sDbServices) Get(c *gin.Context, table string, out interface{}, column 
 	return db.Table(table).Where(search).
 		Scopes(s.Order(order), s.Joins(join...)).
 		Select(column).
-		Limit(3).
+		Limit(30).
 		Find(out).Error
 }
 
@@ -29,8 +29,17 @@ func (s *sDbServices) Page(c *gin.Context, table string, out interface{}, column
 		Find(out).Error
 }
 
-func (s *sDbServices) Count(c *gin.Context) {
+func (s *sDbServices) Count(c *gin.Context, table string, join []string, search interface{}) int64 {
+	var count int64
+	err := db.Table(table).Where(search).
+		Scopes(s.Joins(join...)).
+		Count(&count).Error
 
+	if err != nil {
+		return 0
+	}
+
+	return count
 }
 
 func (s *sDbServices) Read(c *gin.Context) {

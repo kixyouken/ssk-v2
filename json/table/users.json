@@ -3,5 +3,14 @@
     "model": "users",
     "columns": [
        
+    ],
+    "orders": [
+        {
+            "field": "id",
+            "sort": "desc"
+        },
+        {
+            "field": "updated_by"
+        }
     ]
 }
