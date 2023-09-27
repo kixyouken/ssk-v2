@@ -1,0 +1,34 @@
+{
+    "name": "用户表",
+    "table": "users",
+    "joins": [
+        {
+            "table": "master_university",
+            "foreign": "id",
+            "key": "master_university_id",
+            "join": "left",
+            "columns": [
+                
+            ]
+        }
+    ],
+    "withs": [
+        {
+            "table": "master_university",
+            "foreign": "id",
+            "key": "master_university_id",
+            "join": "left",
+            "columns": [
+                
+            ]
+        }
+    ],
+    "columns": [
+        {
+            "field": "id"
+        },
+        {
+            "field": "email"
+        }
+    ]
+}

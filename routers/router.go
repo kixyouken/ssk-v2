@@ -9,12 +9,18 @@ import (
 func GetRouter() *gin.Engine {
 	r := gin.Default()
 
+	// 设置静态文件目录
+	r.Static("/json", "./json")
+
+	admin := r.Group("admin")
+	{
+		admin.GET("/model/:model", controllers.GetModel)
+	}
+
 	api := r.Group("api")
 	{
 		// 所有
-		api.GET("/table/:model/get", controllers.Get)
-		// 分页
-		api.GET("/table/:model/page", controllers.Page)
+		api.GET("/table/:model", controllers.Get)
 		// 详情
 		api.GET("/form/:model/:id", controllers.Read)
 		// 新增

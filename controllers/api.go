@@ -1,11 +1,20 @@
 package controllers
 
-import "github.com/gin-gonic/gin"
+import (
+	"ssk-v2/services"
+
+	"github.com/gin-gonic/gin"
+)
 
 func Get(c *gin.Context) {
-
+	table := c.Param("model")
+	tableJson := services.TableServices.GetTableFile(c, table)
+	result := []map[string]interface{}{}
+	services.DbService.Get(c, tableJson.Model, &result, "*", "", []string{}, "")
 	c.JSON(200, gin.H{
 		"message": "Get",
+		"data":    result,
+		"table":   tableJson,
 	})
 }
 
