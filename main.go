@@ -1,14 +1,25 @@
 package main
 
-import "github.com/gin-gonic/gin"
+import (
+	"log"
+	"os"
+	"ssk-v2/databases"
+	"ssk-v2/routers"
+
+	"github.com/joho/godotenv"
+)
 
 func main() {
-	r := gin.Default()
-	r.GET("/ping", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "pong~pong~",
-		})
-	})
-	// 监听并在 0.0.0.0:8080 上启动服务
-	r.Run()
+	r := routers.GetRouter()
+	// 加载.env文件
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+		return
+	}
+	port := os.Getenv("APP_PORT")
+	// 监听并在 0.0.0.0:9000 上启动服务
+	r.Run(":" + port)
+
+	databases.CloseMysql()
 }
