@@ -12,6 +12,12 @@ type sFormServices struct{}
 
 var FormServices = sFormServices{}
 
+// GetForm 获取 form.json 文件
+//
+//	@receiver s
+//	@param c
+//	@param form
+//	@return *forms.FormJson
 func (s *sFormServices) GetForm(c *gin.Context, form string) *forms.FormJson {
 	formFile := "./json/form/" + form + ".json"
 	body, err := os.ReadFile(formFile)

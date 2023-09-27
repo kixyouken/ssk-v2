@@ -33,6 +33,12 @@ func (s *sModelServices) GetModelFile(c *gin.Context, model string) *models.Mode
 	return &modelJson
 }
 
+// GetModelColumns 获取 model.json 文件 columns 信息
+//
+//	@receiver s
+//	@param c
+//	@param model
+//	@return []string
 func (s *sModelServices) GetModelColumns(c *gin.Context, model models.ModelJson) []string {
 	columns := []string{}
 	if model.Columns == nil || len(model.Columns) == 0 {
@@ -48,6 +54,12 @@ func (s *sModelServices) GetModelColumns(c *gin.Context, model models.ModelJson)
 	return columns
 }
 
+// GetModelJoins 获取 model.json 文件 joins 信息
+//
+//	@receiver s
+//	@param c
+//	@param model
+//	@return []string
 func (s *sModelServices) GetModelJoins(c *gin.Context, model models.ModelJson) []string {
 	joins := []string{}
 	for _, value := range model.Joins {
@@ -58,6 +70,12 @@ func (s *sModelServices) GetModelJoins(c *gin.Context, model models.ModelJson) [
 	return joins
 }
 
+// GetModelJoinsColumns 获取 model.json 文件 joins 下 columns 信息
+//
+//	@receiver s
+//	@param c
+//	@param model
+//	@return []string
 func (s *sModelServices) GetModelJoinsColumns(c *gin.Context, model models.ModelJson) []string {
 	type JoinColumns struct {
 		Field string `json:"field"`
@@ -80,6 +98,12 @@ func (s *sModelServices) GetModelJoinsColumns(c *gin.Context, model models.Model
 	return columns
 }
 
+// GetModelWithsColumns 获取 model.json 文件下 withs 下 columns 信息
+//
+//	@receiver s
+//	@param c
+//	@param model
+//	@return []string
 func (s *sModelServices) GetModelWithsColumns(c *gin.Context, model models.ModelJson) []string {
 	columns := []string{}
 	for _, value := range model.Withs {

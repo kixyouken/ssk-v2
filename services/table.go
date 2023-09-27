@@ -13,6 +13,12 @@ type sTableServices struct{}
 
 var TableServices = sTableServices{}
 
+// GetTableFile 获取 table.json 文件
+//
+//	@receiver s
+//	@param c
+//	@param table
+//	@return *tables.TableJson
 func (s *sTableServices) GetTableFile(c *gin.Context, table string) *tables.TableJson {
 	modelFile := "./json/table/" + table + ".json"
 	body, err := os.ReadFile(modelFile)
@@ -27,6 +33,12 @@ func (s *sTableServices) GetTableFile(c *gin.Context, table string) *tables.Tabl
 	return &tableJson
 }
 
+// GetTableOrders 获取 table.json 文件 orders 信息
+//
+//	@receiver s
+//	@param c
+//	@param table
+//	@return string
 func (s *sTableServices) GetTableOrders(c *gin.Context, table tables.TableJson) string {
 	model := ModelServices.GetModelFile(c, table.Model)
 	orders := []string{}

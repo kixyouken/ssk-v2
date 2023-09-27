@@ -6,6 +6,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// GetTable 获取 table 配置
+//
+//	@param c
 func GetTable(c *gin.Context) {
 	table := c.Param("table")
 	tableJson := services.TableServices.GetTableFile(c, table)
@@ -15,6 +18,9 @@ func GetTable(c *gin.Context) {
 	})
 }
 
+// GetForm 获取 form 配置
+//
+//	@param c
 func GetForm(c *gin.Context) {
 	form := c.Param("form")
 	formJson := services.FormServices.GetForm(c, form)
@@ -24,6 +30,9 @@ func GetForm(c *gin.Context) {
 	})
 }
 
+// GetModel 获取 model 配置
+//
+//	@param c
 func GetModel(c *gin.Context) {
 	model := c.Param("model")
 	modelJson := services.ModelServices.GetModelFile(c, model)

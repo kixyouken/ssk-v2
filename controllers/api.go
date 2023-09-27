@@ -6,6 +6,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Get 获取列表数据
+//
+//	@param c
 func Get(c *gin.Context) {
 	table := c.Param("model")
 	tableJson := services.TableServices.GetTableFile(c, table)
@@ -26,22 +29,13 @@ func Get(c *gin.Context) {
 	}
 
 	if modelJson.Withs != nil && len(modelJson.Withs) > 0 {
-		services.ResultServices.GetWiths(c, result, *modelJson)
+		services.ResultServices.HandleModelWiths(c, result, *modelJson)
 	}
 
 	c.JSON(200, gin.H{
 		"message": "Get",
-		"data":    result,
 		"count":   count,
-		"table":   tableJson,
-		"orders":  orders,
-	})
-}
-
-func Page(c *gin.Context) {
-
-	c.JSON(200, gin.H{
-		"message": "Page",
+		"data":    result,
 	})
 }
 
