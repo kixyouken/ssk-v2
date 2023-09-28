@@ -51,5 +51,51 @@
             "field": "created_at",
             "format": "Y-m-d H:i:s"
         }
+    ],
+    "wheres": [
+        {
+            "field": "name",
+            "match": "=",
+            "value": "test"
+        },
+        {
+            "match": "like"
+        },
+        {
+            "match": "!="
+        },
+        {
+            "match": "<>"
+        },
+        {
+            "match": ">="
+        },
+        {
+            "match": "<="
+        },
+        {
+            "match": ">"
+        },
+        {
+            "match": "<"
+        },
+        {
+            "field": "id",
+            "match": "in",
+            "value": "100000000,100000001"
+        },
+        {
+            "field": "id",
+            "match": "between",
+            "value": "100000000,100000001"
+        },
+        {
+            "field": "deleted_at",
+            "value": "is null"
+        },
+        {
+            "field": "withdrawaled_at",
+            "value": "not null"
+        }
     ]
 }

@@ -3,7 +3,8 @@
     "model": "users",
     "columns": [],
     "orders": [],
-    "page": 5,
-    "limit": 2,
-    "paginate": "true"
+    "paginate": "true",
+    "wheres": [
+
+    ]
 }

@@ -6,6 +6,7 @@ type ModelJson struct {
 	Joins   []Joins   `json:"joins"`
 	Withs   []Withs   `json:"withs"`
 	Columns []Columns `json:"columns"`
+	Wheres  []Wheres  `json:"wheres"`
 }
 
 type Columns struct {
@@ -34,4 +35,10 @@ type Withs struct {
 type Orders struct {
 	Field string `json:"field"`
 	Sort  string `json:"sort"`
+}
+
+type Wheres struct {
+	Field string `json:"field"`
+	Match string `json:"match"`
+	Value string `json:"value"`
 }

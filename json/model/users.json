@@ -8,10 +8,20 @@
             "field": "id"
         },
         {
+            "field": "name"
+        },
+        {
             "field": "email"
         },
         {
             "field": "master_university_id"
+        }
+    ],
+    "wheres": [
+        {
+            "field": "id",
+            "match": "between",
+            "value": "100000000,100000001"
         }
     ]
 }
