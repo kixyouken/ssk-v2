@@ -1,3 +1,7 @@
 {
-    "model": "university"
+    "model": "university",
+    "paginate": "true",
+    "orders": [
+
+    ]
 }

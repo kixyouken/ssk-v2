@@ -115,7 +115,13 @@ func (s *sModelServices) GetModelWithsColumns(c *gin.Context, model models.Model
 	return columns
 }
 
-func (s *sModelServices) GetModelWithsOrders(c *gin.Context, model models.ModelJson) []string {
+// GetModelWithsOrders 获取 model.json 文件下 withs 下 orders 信息
+//
+//	@receiver s
+//	@param c
+//	@param model
+//	@return string
+func (s *sModelServices) GetModelWithsOrders(c *gin.Context, model models.ModelJson) string {
 	orders := []string{}
 	for _, value := range model.Withs {
 		for _, v := range value.Orders {
@@ -123,5 +129,5 @@ func (s *sModelServices) GetModelWithsOrders(c *gin.Context, model models.ModelJ
 		}
 	}
 
-	return orders
+	return strings.Join(orders, ",")
 }

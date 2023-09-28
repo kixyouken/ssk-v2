@@ -181,6 +181,12 @@ func (s *sDbServices) Joins(joins ...string) func(db *gorm.DB) *gorm.DB {
 	}
 }
 
+// Wheres 默认搜索条件处理
+//
+//	@receiver s
+//	@param c
+//	@return db
+//	@return func(db *gorm.DB) *gorm.DB
 func (s *sDbServices) Wheres(c *gin.Context) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
 		table := c.Param("table")

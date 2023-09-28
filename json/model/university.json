@@ -11,5 +11,27 @@
             "field": "created_at",
             "format": "Y-m-d H:i:s"
         }
+    ],
+    "withs": [
+        {
+            "table": "users",
+            "foreign": "master_university_id",
+            "key": "id",
+            "columns": [
+                {
+                    "field": "id"
+                },
+                {
+                    "field": "name"
+                }
+            ],
+            "orders": [
+                {
+                    "field": "id",
+                    "sort": "desc"
+                }
+            ],
+            "has": "hasMany"
+        }
     ]
 }

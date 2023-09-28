@@ -23,13 +23,14 @@ func (s *sResultServices) HandleModelWiths(c *gin.Context, result []map[string]i
 		for _, v := range model.Withs {
 			if value[v.Key] != nil {
 				columns := ModelServices.GetModelWithsColumns(c, model)
+				orders := ModelServices.GetModelWithsOrders(c, model)
 				if v.Has == "hasOne" {
 					withResult := map[string]interface{}{}
 					DbService.HasOne(c, v.Table, &withResult, columns, map[string]interface{}{v.Foreign: value[v.Key]})
 					value["with_"+v.Table] = withResult
 				} else if v.Has == "hasMany" {
 					withResult := []map[string]interface{}{}
-					DbService.HasMany(c, v.Table, &withResult, columns, "", map[string]interface{}{v.Foreign: value[v.Key]})
+					DbService.HasMany(c, v.Table, &withResult, columns, orders, map[string]interface{}{v.Foreign: value[v.Key]})
 					value["with_"+v.Table] = withResult
 				}
 			} else {

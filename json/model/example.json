@@ -19,7 +19,20 @@
             "table": "master_university",
             "foreign": "id",
             "key": "master_university_id",
-            "join": "left",
+            "columns": [
+                {
+                    "field": "id"
+                },
+                {
+                    "field": "name"
+                }
+            ],
+            "has": "hasOne"
+        },
+        {
+            "table": "master_university",
+            "foreign": "id",
+            "key": "master_university_id",
             "columns": [
                 {
                     "field": "id"
@@ -34,7 +47,7 @@
                     "sort": "desc"
                 }
             ],
-            "has": "hasOne"
+            "has": "hasMany"
         }
     ],
     "columns": [
