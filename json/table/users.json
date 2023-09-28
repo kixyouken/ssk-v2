@@ -6,5 +6,18 @@
     "paginate": "true",
     "wheres": [
 
+    ],
+    "withs": [
+        {
+            "model": "job",
+            "foreign": "id",
+            "key": "master_job_id",
+            "columns": [
+                {
+                    "field": "name"
+                }
+            ],
+            "has": "hasOne"
+        }
     ]
 }

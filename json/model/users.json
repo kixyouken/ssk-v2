@@ -10,6 +10,9 @@
             "columns": [
                 {
                     "field": "id"
+                },
+                {
+                    "field": "name"
                 }
             ],
             "has": "hasOne"

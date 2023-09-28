@@ -13,6 +13,39 @@
             "field": "updated_by"
         }
     ],
+    "withs": [
+        {
+            "model": "job",
+            "foreign": "id",
+            "key": "master_job_id",
+            "columns": [
+                {
+                    "field": "name"
+                }
+            ],
+            "has": "hasOne"
+        },
+        {
+            "model": "users",
+            "foreign": "master_university_id",
+            "key": "id",
+            "columns": [
+                {
+                    "field": "id"
+                },
+                {
+                    "field": "name"
+                }
+            ],
+            "orders": [
+                {
+                    "field": "id",
+                    "sort": "desc"
+                }
+            ],
+            "has": "hasMany"
+        }
+    ],
     "page": 1,
     "limit": 10,
     "paginate": "true",

@@ -8,6 +8,7 @@ type TableJson struct {
 	Limit    int      `json:"limit"`
 	Paginate string   `json:"paginate"`
 	Wheres   []Wheres `json:"wheres"`
+	Withs    []Withs  `json:"withs"`
 }
 
 type Orders struct {
@@ -19,4 +20,18 @@ type Wheres struct {
 	Field string `json:"field"`
 	Match string `json:"match"`
 	Value string `json:"value"`
+}
+
+type Withs struct {
+	Model   string    `json:"model"`
+	Foreign string    `json:"foreign"`
+	Key     string    `json:"key"`
+	Columns []Columns `json:"columns"`
+	Orders  []Orders  `json:"orders"`
+	Has     string    `json:"has"`
+}
+
+type Columns struct {
+	Field  string `json:"field"`
+	Format string `json:"format"`
 }

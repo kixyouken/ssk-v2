@@ -3,6 +3,7 @@ package services
 import (
 	"ssk-v2/jsons/forms"
 	"ssk-v2/jsons/models"
+	"ssk-v2/jsons/tables"
 	"strings"
 	"time"
 
@@ -21,8 +22,8 @@ var ResultServices = sResultServices{}
 //	@param form
 func (s *sResultServices) HandleFormWiths(c *gin.Context, result map[string]interface{}, form forms.FormJson) {
 	for _, v := range form.Withs {
+		modelJson := ModelServices.GetModelFile(c, v.Model)
 		if result[v.Key] != nil {
-			modelJson := ModelServices.GetModelFile(c, v.Model)
 			columns := FormServices.GetFormWithsColumns(c, v)
 			if v.Has == "hasOne" {
 				withResult := map[string]interface{}{}
@@ -37,12 +38,57 @@ func (s *sResultServices) HandleFormWiths(c *gin.Context, result map[string]inte
 		} else {
 			if v.Has == "hasOne" {
 				withResult := map[string]interface{}{}
-				result["with_"+v.Model] = withResult
+				result["with_"+modelJson.Table] = withResult
 			} else if v.Has == "hasMany" {
 				withResult := []map[string]interface{}{}
-				result["with_"+v.Model] = withResult
+				result["with_"+modelJson.Table] = withResult
 			}
 		}
+	}
+}
+
+// HandleTableWiths 处理 table 下 withs 关联信息
+//
+//	@receiver s
+//	@param c
+//	@param result
+//	@param table
+func (s *sResultServices) HandleTableWiths(c *gin.Context, result map[string]interface{}, table tables.TableJson) {
+	for _, v := range table.Withs {
+		modelJson := ModelServices.GetModelFile(c, v.Model)
+		if result[v.Key] != nil {
+			columns := TableServices.GetTableWithsColumns(c, v)
+			if v.Has == "hasOne" {
+				withResult := map[string]interface{}{}
+				DbService.HasOne(c, modelJson.Table, &withResult, columns, map[string]interface{}{v.Foreign: result[v.Key]})
+				result["with_"+modelJson.Table] = withResult
+			} else if v.Has == "hasMany" {
+				withResult := []map[string]interface{}{}
+				orders := TableServices.GetTableWithsOrders(c, v)
+				DbService.HasMany(c, modelJson.Table, &withResult, columns, orders, map[string]interface{}{v.Foreign: result[v.Key]})
+				result["with_"+modelJson.Table] = withResult
+			}
+		} else {
+			if v.Has == "hasOne" {
+				withResult := map[string]interface{}{}
+				result["with_"+modelJson.Table] = withResult
+			} else if v.Has == "hasMany" {
+				withResult := []map[string]interface{}{}
+				result["with_"+modelJson.Table] = withResult
+			}
+		}
+	}
+}
+
+// HandleTableWithsList 处理 table 下 withs 关联信息
+//
+//	@receiver s
+//	@param c
+//	@param result
+//	@param table
+func (s *sResultServices) HandleTableWithsList(c *gin.Context, result []map[string]interface{}, table tables.TableJson) {
+	for _, value := range result {
+		s.HandleTableWiths(c, value, table)
 	}
 }
 

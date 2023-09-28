@@ -48,3 +48,33 @@ func (s *sTableServices) GetTableOrders(c *gin.Context, table tables.TableJson) 
 
 	return strings.Join(orders, ",")
 }
+
+// GetTableWithsColumns 获取 table.json 文件 withs 下 orders 信息
+//
+//	@receiver s
+//	@param c
+//	@param withs
+//	@return []string
+func (s *sTableServices) GetTableWithsColumns(c *gin.Context, withs tables.Withs) []string {
+	columns := []string{}
+	for _, v := range withs.Columns {
+		columns = append(columns, v.Field)
+	}
+
+	return columns
+}
+
+// GetTableWithsOrders 获取 table.json 文件 withs 下 orders 信息
+//
+//	@receiver s
+//	@param c
+//	@param withs
+//	@return string
+func (s *sTableServices) GetTableWithsOrders(c *gin.Context, withs tables.Withs) string {
+	orders := []string{}
+	for _, v := range withs.Orders {
+		orders = append(orders, v.Field+" "+strings.ToUpper(v.Sort))
+	}
+
+	return strings.Join(orders, ",")
+}

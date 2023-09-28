@@ -34,6 +34,10 @@ func Get(c *gin.Context) {
 		services.ResultServices.HandleModelWithsList(c, result, *modelJson)
 	}
 
+	if tableJson.Withs != nil && len(tableJson.Withs) > 0 {
+		services.ResultServices.HandleTableWithsList(c, result, *tableJson)
+	}
+
 	if modelJson.Columns != nil && len(modelJson.Columns) > 0 {
 		services.ResultServices.HandleModelFieldFormatList(c, result, *modelJson)
 	}
