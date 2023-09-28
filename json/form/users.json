@@ -1,4 +1,17 @@
 {
     "name": "用户表格",
-    "model": "users"
+    "model": "users",
+    "withs": [
+        {
+            "model": "job",
+            "foreign": "id",
+            "key": "master_job_id",
+            "columns": [
+                {
+                    "field": "name"
+                }
+            ],
+            "has": "hasOne"
+        }
+    ]
 }

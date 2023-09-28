@@ -1,7 +1,21 @@
 {
-    "name": "学校表单",
-    "model": "university",
+    "name": "用户表格",
+    "model": "users",
     "withs": [
+        {
+            "model": "university",
+            "foreign": "id",
+            "key": "master_university_id",
+            "columns": [
+                {
+                    "field": "id"
+                },
+                {
+                    "field": "name"
+                }
+            ],
+            "has": "hasOne"
+        },
         {
             "model": "users",
             "foreign": "master_university_id",

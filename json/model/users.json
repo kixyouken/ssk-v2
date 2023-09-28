@@ -1,9 +1,7 @@
 {
     "name": "用户表",
     "table": "users",
-    "joins": [
-        
-    ],
+    "joins": [],
     "withs": [
         {
             "table": "master_university",
@@ -12,9 +10,6 @@
             "columns": [
                 {
                     "field": "id"
-                },
-                {
-                    "field": "name"
                 }
             ],
             "has": "hasOne"
@@ -32,6 +27,9 @@
         },
         {
             "field": "master_university_id"
+        },
+        {
+            "field": "master_job_id"
         }
     ],
     "wheres": []

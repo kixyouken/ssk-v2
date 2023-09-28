@@ -64,6 +64,10 @@ func Read(c *gin.Context) {
 		services.ResultServices.HandleModelWiths(c, result, *modelJson)
 	}
 
+	if formJson.Withs != nil && len(formJson.Withs) > 0 {
+		services.ResultServices.HandleFormWiths(c, result, *formJson)
+	}
+
 	if modelJson.Columns != nil && len(modelJson.Columns) > 0 {
 		services.ResultServices.HandleModelFieldFormat(c, result, *modelJson)
 	}

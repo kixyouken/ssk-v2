@@ -26,7 +26,6 @@ type Withs struct {
 	Table   string    `json:"table"`
 	Foreign string    `json:"foreign"`
 	Key     string    `json:"key"`
-	Join    string    `json:"join"`
 	Columns []Columns `json:"columns"`
 	Orders  []Orders  `json:"orders"`
 	Has     string    `json:"has"`

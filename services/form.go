@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"os"
 	"ssk-v2/jsons/forms"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -30,4 +31,34 @@ func (s *sFormServices) GetForm(c *gin.Context, form string) *forms.FormJson {
 	json.Unmarshal(body, &formJson)
 
 	return &formJson
+}
+
+// GetFormWithsColumns 获取 form.json 文件 withs 下 columns 信息
+//
+//	@receiver s
+//	@param c
+//	@param withs
+//	@return []string
+func (s *sFormServices) GetFormWithsColumns(c *gin.Context, withs forms.Withs) []string {
+	columns := []string{}
+	for _, v := range withs.Columns {
+		columns = append(columns, v.Field)
+	}
+
+	return columns
+}
+
+// GetModelWithsOrders 获取 form.json 文件 withs 下 orders 信息
+//
+//	@receiver s
+//	@param c
+//	@param withs
+//	@return string
+func (s *sFormServices) GetModelWithsOrders(c *gin.Context, withs forms.Withs) string {
+	orders := []string{}
+	for _, v := range withs.Orders {
+		orders = append(orders, v.Field+" "+strings.ToUpper(v.Sort))
+	}
+
+	return strings.Join(orders, ",")
 }
