@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"ssk-v2/services"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -30,11 +31,11 @@ func Get(c *gin.Context) {
 	}
 
 	if modelJson.Withs != nil && len(modelJson.Withs) > 0 {
-		services.ResultServices.HandleModelWiths(c, result, *modelJson)
+		services.ResultServices.HandleModelWithsList(c, result, *modelJson)
 	}
 
 	if modelJson.Columns != nil && len(modelJson.Columns) > 0 {
-		services.ResultServices.HandleModelFieldFormat(c, result, *modelJson)
+		services.ResultServices.HandleModelFieldFormatList(c, result, *modelJson)
 	}
 
 	c.JSON(200, gin.H{
@@ -44,10 +45,31 @@ func Get(c *gin.Context) {
 	})
 }
 
+// Read 获取详情
+//
+//	@param c
 func Read(c *gin.Context) {
+	form := c.Param("form")
+	formJson := services.FormServices.GetForm(c, form)
+	modelJson := services.ModelServices.GetModelFile(c, formJson.Model)
+	columns := services.ModelServices.GetModelColumns(c, *modelJson)
 
+	idStr := c.Param("id")
+	idInt, _ := strconv.Atoi(idStr)
+
+	result := map[string]interface{}{}
+	services.DbService.Read(c, modelJson.Table, idInt, &result, columns)
+
+	if modelJson.Withs != nil && len(modelJson.Withs) > 0 {
+		services.ResultServices.HandleModelWiths(c, result, *modelJson)
+	}
+
+	if modelJson.Columns != nil && len(modelJson.Columns) > 0 {
+		services.ResultServices.HandleModelFieldFormat(c, result, *modelJson)
+	}
 	c.JSON(200, gin.H{
 		"message": "Read",
+		"data":    result,
 	})
 }
 

@@ -23,12 +23,12 @@ var db = databases.InitMysql()
 //	@param out
 //	@param column
 //	@param order
-//	@param join
+//	@param joins
 //	@param search
 //	@return error
-func (s *sDbServices) Get(c *gin.Context, table string, out interface{}, column interface{}, order string, join []string, search interface{}) error {
+func (s *sDbServices) Get(c *gin.Context, table string, out interface{}, column interface{}, order string, joins []string, search interface{}) error {
 	return db.Table(table).Where(search).
-		Scopes(s.Order(order), s.Joins(join...)).
+		Scopes(s.Order(order), s.Joins(joins...)).
 		Select(column).
 		Find(out).Error
 }
@@ -41,12 +41,11 @@ func (s *sDbServices) Get(c *gin.Context, table string, out interface{}, column 
 //	@param out
 //	@param column
 //	@param order
-//	@param join
-//	@param search
+//	@param joins
 //	@return error
-func (s *sDbServices) Page(c *gin.Context, table string, out interface{}, column interface{}, order string, join []string) error {
+func (s *sDbServices) Page(c *gin.Context, table string, out interface{}, column interface{}, order string, joins []string) error {
 	return db.Table(table).
-		Scopes(s.Paginate(c), s.Order(order), s.Joins(join...), s.Wheres(c)).
+		Scopes(s.Paginate(c), s.Order(order), s.Joins(joins...), s.Wheres(c)).
 		Select(column).
 		Find(out).Error
 }
@@ -56,13 +55,12 @@ func (s *sDbServices) Page(c *gin.Context, table string, out interface{}, column
 //	@receiver s
 //	@param c
 //	@param table
-//	@param join
-//	@param search
+//	@param joins
 //	@return int64
-func (s *sDbServices) Count(c *gin.Context, table string, join []string) int64 {
+func (s *sDbServices) Count(c *gin.Context, table string, joins []string) int64 {
 	var count int64
 	err := db.Table(table).
-		Scopes(s.Joins(join...), s.Wheres(c)).
+		Scopes(s.Joins(joins...), s.Wheres(c)).
 		Count(&count).Error
 
 	if err != nil {
@@ -105,8 +103,20 @@ func (s *sDbServices) HasMany(c *gin.Context, table string, out interface{}, col
 		Find(out).Error
 }
 
-func (s *sDbServices) Read(c *gin.Context) {
-
+// Read 获取详情
+//
+//	@receiver s
+//	@param c
+//	@param table
+//	@param id
+//	@param out
+//	@param column
+//	@return error
+func (s *sDbServices) Read(c *gin.Context, table string, id int, out interface{}, column interface{}) error {
+	return db.Table(table).Where(table+".id = ?", id).
+		Limit(1).
+		Select(column).
+		Find(out).Error
 }
 
 func (s *sDbServices) Save(c *gin.Context) {
