@@ -78,3 +78,50 @@ func (s *sTableServices) GetTableWithsOrders(c *gin.Context, withs tables.Withs)
 
 	return strings.Join(orders, ",")
 }
+
+// GetTableJoins 获取 table.json 文件 joins 信息
+//
+//	@receiver s
+//	@param c
+//	@param table
+//	@return []string
+func (s *sTableServices) GetTableJoins(c *gin.Context, table tables.TableJson) []string {
+	modelJson := ModelServices.GetModelFile(c, table.Model)
+	joins := []string{}
+	for _, value := range table.Joins {
+		modelJoinJson := ModelServices.GetModelFile(c, value.Model)
+		joinTable := strings.ToUpper(value.Join) + " JOIN " + modelJoinJson.Table + " ON " + modelJoinJson.Table + "." + value.Foreign + " = " + modelJson.Table + "." + value.Key
+		joins = append(joins, joinTable)
+	}
+
+	return joins
+}
+
+// GetTableJoinsColumns 获取 table.json 文件 joins 下 columns 信息
+//
+//	@receiver s
+//	@param c
+//	@param table
+//	@return []string
+func (s *sTableServices) GetTableJoinsColumns(c *gin.Context, table tables.TableJson) []string {
+	type JoinColumns struct {
+		Field string `json:"field"`
+	}
+	columns := []string{}
+	for _, value := range table.Joins {
+		modelJson := ModelServices.GetModelFile(c, value.Model)
+		if value.Columns == nil || len(value.Columns) == 0 {
+			joinColumns := []JoinColumns{}
+			db.Raw("SHOW COLUMNS FROM `" + modelJson.Table + "`").Scan(&joinColumns)
+			for _, v := range joinColumns {
+				columns = append(columns, modelJson.Table+"."+v.Field+" AS join_"+modelJson.Table+"_"+v.Field)
+			}
+		} else {
+			for _, v := range value.Columns {
+				columns = append(columns, modelJson.Table+"."+v.Field+" AS join_"+modelJson.Table+"_"+v.Field)
+			}
+		}
+	}
+
+	return columns
+}

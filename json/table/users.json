@@ -7,17 +7,28 @@
     "wheres": [
 
     ],
-    "withs": [
+    "joins": [
         {
             "model": "job",
             "foreign": "id",
             "key": "master_job_id",
+            "join": "left",
             "columns": [
                 {
                     "field": "name"
                 }
-            ],
-            "has": "hasOne"
+            ]
+        },
+        {
+            "model": "university",
+            "foreign": "id",
+            "key": "master_university_id",
+            "join": "left",
+            "columns": [
+                {
+                    "field": "name"
+                }
+            ]
         }
     ]
 }

@@ -9,6 +9,7 @@ type TableJson struct {
 	Paginate string   `json:"paginate"`
 	Wheres   []Wheres `json:"wheres"`
 	Withs    []Withs  `json:"withs"`
+	Joins    []Joins  `json:"joins"`
 }
 
 type Orders struct {
@@ -34,4 +35,12 @@ type Withs struct {
 type Columns struct {
 	Field  string `json:"field"`
 	Format string `json:"format"`
+}
+
+type Joins struct {
+	Model   string    `json:"model"`
+	Foreign string    `json:"foreign"`
+	Key     string    `json:"key"`
+	Join    string    `json:"join"`
+	Columns []Columns `json:"columns"`
 }

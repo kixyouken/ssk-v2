@@ -18,6 +18,14 @@ func Get(c *gin.Context) {
 	orders := services.TableServices.GetTableOrders(c, *tableJson)
 	joins := services.ModelServices.GetModelJoins(c, *modelJson)
 
+	if tableJson.Joins != nil && len(tableJson.Joins) > 0 {
+		tableJoins := services.TableServices.GetTableJoins(c, *tableJson)
+		joins = append(joins, tableJoins...)
+
+		tableJoinsColumns := services.TableServices.GetTableJoinsColumns(c, *tableJson)
+		columns = append(columns, tableJoinsColumns...)
+	}
+
 	var count int64
 	var result []map[string]interface{}
 	if tableJson.Paginate == "true" {
