@@ -1,29 +1,6 @@
 {
     "model": "university",
-    "paginate": "true",
-    "orders": [
-
-    ],
-    "withs": [
-        {
-            "model": "users",
-            "foreign": "master_university_id",
-            "key": "id",
-            "columns": [
-                {
-                    "field": "id"
-                },
-                {
-                    "field": "name"
-                }
-            ],
-            "orders": [
-                {
-                    "field": "id",
-                    "sort": "desc"
-                }
-            ],
-            "has": "hasMany"
-        }
-    ]
+    "orders": [],
+    "withs": [],
+    "limit": 2000
 }

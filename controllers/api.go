@@ -7,10 +7,24 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// Get 获取列表数据
+// Get 获取所有数据
 //
 //	@param c
 func Get(c *gin.Context) {
+	model := c.Param("model")
+	result := []map[string]interface{}{}
+	services.DbService.Get(c, model, &result, "*", "", []string{}, "")
+
+	c.JSON(200, gin.H{
+		"message": "Get",
+		"data":    result,
+	})
+}
+
+// Page 获取列表数据
+//
+//	@param c
+func Page(c *gin.Context) {
 	table := c.Param("table")
 	tableJson := services.TableServices.GetTableFile(c, table)
 	modelJson := services.ModelServices.GetModelFile(c, tableJson.Model)
@@ -26,16 +40,10 @@ func Get(c *gin.Context) {
 		columns = append(columns, tableJoinsColumns...)
 	}
 
-	var count int64
-	var result []map[string]interface{}
-	if tableJson.Paginate == "true" {
-		count = services.DbService.Count(c, modelJson.Table, joins)
-		if count > 0 {
-			services.DbService.Page(c, modelJson.Table, &result, columns, orders, joins)
-		}
-	} else {
-		services.DbService.Get(c, modelJson.Table, &result, columns, orders, joins, "")
-		count = int64(len(result))
+	result := []map[string]interface{}{}
+	count := services.DbService.Count(c, modelJson.Table, joins)
+	if count > 0 {
+		services.DbService.Page(c, modelJson.Table, &result, columns, orders, joins)
 	}
 
 	if modelJson.Withs != nil && len(modelJson.Withs) > 0 {

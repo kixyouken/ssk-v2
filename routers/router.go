@@ -22,7 +22,9 @@ func GetRouter() *gin.Engine {
 	api := r.Group("api")
 	{
 		// 所有
-		api.GET("/table/:table", controllers.Get)
+		api.GET("/widget/:model", controllers.Get)
+		// 分页
+		api.GET("/table/:table", controllers.Page)
 		// 详情
 		api.GET("/form/:form/:id", controllers.Read)
 		// 新增

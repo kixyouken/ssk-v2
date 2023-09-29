@@ -1,15 +1,14 @@
 package tables
 
 type TableJson struct {
-	Name     string   `json:"name"`
-	Model    string   `json:"model"`
-	Orders   []Orders `json:"orders"`
-	Page     int      `json:"page"`
-	Limit    int      `json:"limit"`
-	Paginate string   `json:"paginate"`
-	Wheres   []Wheres `json:"wheres"`
-	Withs    []Withs  `json:"withs"`
-	Joins    []Joins  `json:"joins"`
+	Name   string   `json:"name"`
+	Model  string   `json:"model"`
+	Orders []Orders `json:"orders"`
+	Page   int      `json:"page"`
+	Limit  int      `json:"limit"`
+	Wheres []Wheres `json:"wheres"`
+	Withs  []Withs  `json:"withs"`
+	Joins  []Joins  `json:"joins"`
 }
 
 type Orders struct {

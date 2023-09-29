@@ -1,9 +1,7 @@
 {
     "name": "用户表格",
     "model": "users",
-    "columns": [
-       
-    ],
+    "columns": [],
     "orders": [
         {
             "field": "id",
@@ -72,7 +70,6 @@
     ],
     "page": 1,
     "limit": 10,
-    "paginate": "true",
     "wheres": [
         {
             "field": "name",
