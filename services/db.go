@@ -77,10 +77,10 @@ func (s *sDbServices) Count(c *gin.Context, table string, joins []string) int64 
 //	@param table
 //	@param out
 //	@param column
-//	@param search
+//	@param wheres
 //	@return error
-func (s *sDbServices) HasOne(c *gin.Context, table string, out interface{}, column interface{}, search interface{}) error {
-	return db.Table(table).Where(search).
+func (s *sDbServices) HasOne(c *gin.Context, table string, out interface{}, column interface{}, wheres interface{}) error {
+	return db.Table(table).Where(wheres).
 		Select(column).
 		Limit(1).
 		Find(out).Error
@@ -94,13 +94,33 @@ func (s *sDbServices) HasOne(c *gin.Context, table string, out interface{}, colu
 //	@param out
 //	@param column
 //	@param order
-//	@param search
+//	@param wheres
 //	@return error
-func (s *sDbServices) HasMany(c *gin.Context, table string, out interface{}, column interface{}, order string, search interface{}) error {
-	return db.Table(table).Where(search).
+func (s *sDbServices) HasMany(c *gin.Context, table string, out interface{}, column interface{}, order string, wheres interface{}) error {
+	return db.Table(table).Where(wheres).
 		Scopes(s.Order(order)).
 		Select(column).
 		Find(out).Error
+}
+
+// WithsCount withsCount 统计数量
+//
+//	@receiver s
+//	@param c
+//	@param table
+//	@param wheres
+//	@param search
+//	@return int64
+func (s *sDbServices) WithsCount(c *gin.Context, table string, wheres interface{}, search interface{}) int64 {
+	var count int64
+	err := db.Table(table).Where(wheres).Where(search).
+		Count(&count).Error
+
+	if err != nil {
+		return 0
+	}
+
+	return count
 }
 
 // Read 获取详情
@@ -276,7 +296,7 @@ func (s *sDbServices) Search(c *gin.Context) func(db *gorm.DB) *gorm.DB {
 		for k, v := range search {
 			keys := strings.Split(k, "@")
 			if strings.Contains(v[0], "=") {
-				keys[1] = keys[1] + "="
+				keys[1] += "="
 				v[0] = strings.TrimLeft(v[0], "=")
 			}
 			if len(keys) > 1 {

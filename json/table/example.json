@@ -68,6 +68,24 @@
             ]
         }
     ],
+    "withs_count": [
+        {
+            "model": "users",
+            "foreign": "master_university_id",
+            "key": "id",
+            "wheres": [
+                {
+                    "field": "name",
+                    "match": "like",
+                    "value": "test"
+                },
+                {
+                    "field": "deleted_at",
+                    "value": "isnull"
+                }
+            ]
+        }
+    ],
     "page": 1,
     "limit": 10,
     "wheres": [

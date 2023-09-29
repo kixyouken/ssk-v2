@@ -169,3 +169,99 @@ func (s *sResultServices) HandleModelFieldFormatList(c *gin.Context, result []ma
 		s.HandleModelFieldFormat(c, value, model)
 	}
 }
+
+// HandleTableWithsCount 处理 table 下 withs_count 关联信息
+//
+//	@receiver s
+//	@param c
+//	@param result
+//	@param table
+func (s *sResultServices) HandleTableWithsCount(c *gin.Context, result map[string]interface{}, table tables.TableJson) {
+	for _, value := range table.WithsCount {
+		modelJson := ModelServices.GetModelFile(c, value.Model)
+		withsWheres := []string{}
+		if value.Wheres != nil && len(value.Wheres) > 0 {
+			for _, v := range value.Wheres {
+				switch strings.ToUpper(v.Match) {
+				case "=", "!=", "<>", ">", "<", ">=", "<=":
+					withsWheres = append(withsWheres, v.Field+" "+v.Match+" '"+v.Value+"'")
+				case "IN":
+					withsWheres = append(withsWheres, v.Field+" IN ("+v.Value+")")
+				case "LIKE":
+					withsWheres = append(withsWheres, v.Field+" LIKE '%"+v.Value+"%'")
+				case "LIKE.LEFT":
+					withsWheres = append(withsWheres, v.Field+" LIKE '%"+v.Value)
+				case "LIKE.RIGHT":
+					withsWheres = append(withsWheres, v.Field+" LIKE '"+v.Value+"%'")
+				case "BETWEEN":
+					values := strings.Split(v.Value, ",")
+					withsWheres = append(withsWheres, v.Field+" BETWEEN '"+values[0]+"' AND '"+values[1]+"'")
+				}
+
+				switch strings.ToUpper(v.Value) {
+				case "ISNULL":
+					withsWheres = append(withsWheres, v.Field+" IS NULL")
+				case "NOTNULL":
+					withsWheres = append(withsWheres, v.Field+" IS NOT NULL")
+				}
+			}
+		}
+
+		wheres := strings.Join(withsWheres, " AND ")
+		result["withs_count_"+modelJson.Table] = DbService.WithsCount(c, modelJson.Table, map[string]interface{}{value.Foreign: result[value.Key]}, wheres)
+	}
+}
+
+// HandleTableWithsCountList 处理 table 下 withs_count 关联信息
+//
+//	@receiver s
+//	@param c
+//	@param result
+//	@param table
+func (s *sResultServices) HandleTableWithsCountList(c *gin.Context, result []map[string]interface{}, table tables.TableJson) {
+	for _, value := range result {
+		s.HandleTableWithsCount(c, value, table)
+	}
+}
+
+// HandleFormWithsCount 处理 form 下 withs_count 关联信息
+//
+//	@receiver s
+//	@param c
+//	@param result
+//	@param form
+func (s *sResultServices) HandleFormWithsCount(c *gin.Context, result map[string]interface{}, form forms.FormJson) {
+	for _, value := range form.WithsCount {
+		modelJson := ModelServices.GetModelFile(c, value.Model)
+		withsWheres := []string{}
+		if value.Wheres != nil && len(value.Wheres) > 0 {
+			for _, v := range value.Wheres {
+				switch strings.ToUpper(v.Match) {
+				case "=", "!=", "<>", ">", "<", ">=", "<=":
+					withsWheres = append(withsWheres, v.Field+" "+v.Match+" '"+v.Value+"'")
+				case "IN":
+					withsWheres = append(withsWheres, v.Field+" IN ("+v.Value+")")
+				case "LIKE":
+					withsWheres = append(withsWheres, v.Field+" LIKE '%"+v.Value+"%'")
+				case "LIKE.LEFT":
+					withsWheres = append(withsWheres, v.Field+" LIKE '%"+v.Value)
+				case "LIKE.RIGHT":
+					withsWheres = append(withsWheres, v.Field+" LIKE '"+v.Value+"%'")
+				case "BETWEEN":
+					values := strings.Split(v.Value, ",")
+					withsWheres = append(withsWheres, v.Field+" BETWEEN '"+values[0]+"' AND '"+values[1]+"'")
+				}
+
+				switch strings.ToUpper(v.Value) {
+				case "ISNULL":
+					withsWheres = append(withsWheres, v.Field+" IS NULL")
+				case "NOTNULL":
+					withsWheres = append(withsWheres, v.Field+" IS NOT NULL")
+				}
+			}
+		}
+
+		wheres := strings.Join(withsWheres, " AND ")
+		result["withs_count_"+modelJson.Table] = DbService.WithsCount(c, modelJson.Table, map[string]interface{}{value.Foreign: result[value.Key]}, wheres)
+	}
+}
