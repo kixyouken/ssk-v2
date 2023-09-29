@@ -4,5 +4,24 @@
     "columns": [],
     "orders": [],
     "wheres": [],
-    "joins": []
+    "joins": [
+        {
+            "model": "university",
+            "foreign": "id",
+            "key": "master_university_id",
+            "join": "left",
+            "columns": [
+                {
+                    "field": "name"
+                }
+            ],
+            "wheres": [
+                {
+                    "field": "id",
+                    "match": "=",
+                    "value": "2"
+                }
+            ]
+        }
+    ]
 }

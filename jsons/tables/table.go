@@ -43,6 +43,7 @@ type Joins struct {
 	Key     string    `json:"key"`
 	Join    string    `json:"join"`
 	Columns []Columns `json:"columns"`
+	Wheres  []Wheres  `json:"wheres"`
 }
 
 type WithsCount struct {

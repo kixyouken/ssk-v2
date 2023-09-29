@@ -11,6 +11,12 @@
                 {
                     "field": "name"
                 }
+            ],
+            "wheres": [
+                {
+                    "field": "deleted_at",
+                    "value": "isnull"
+                }
             ]
         }
     ],

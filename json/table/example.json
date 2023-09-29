@@ -65,6 +65,13 @@
                 {
                     "field": "name"
                 }
+            ],
+            "wheres": [
+                {
+                    "field": "id",
+                    "match": "=",
+                    "value": "2"
+                }
             ]
         }
     ],

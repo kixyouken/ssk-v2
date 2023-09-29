@@ -91,6 +91,15 @@ func (s *sTableServices) GetTableJoins(c *gin.Context, table tables.TableJson) [
 	for _, value := range table.Joins {
 		modelJoinJson := ModelServices.GetModelFile(c, value.Model)
 		joinTable := strings.ToUpper(value.Join) + " JOIN " + modelJoinJson.Table + " ON " + modelJoinJson.Table + "." + value.Foreign + " = " + modelJson.Table + "." + value.Key
+		if value.Wheres != nil && len(value.Wheres) > 0 {
+			joinWhere := []string{}
+			for _, v := range value.Wheres {
+				joinWhere = append(joinWhere, modelJoinJson.Table+"."+s.HandleTableJoinsWheres(c, v))
+			}
+			if joinWhere != nil {
+				joinTable += " AND ( " + strings.Join(joinWhere, " AND ") + " )"
+			}
+		}
 		joins = append(joins, joinTable)
 	}
 
@@ -124,4 +133,38 @@ func (s *sTableServices) GetTableJoinsColumns(c *gin.Context, table tables.Table
 	}
 
 	return columns
+}
+
+// HandleTableJoinsWheres 处理 table.json 文件 joins 下 wheres 信息
+//
+//	@receiver s
+//	@param c
+//	@param where
+//	@return string
+func (s *sTableServices) HandleTableJoinsWheres(c *gin.Context, where tables.Wheres) string {
+	wheres := []string{}
+	switch strings.ToUpper(where.Match) {
+	case "=", "!=", "<>", ">", "<", ">=", "<=":
+		wheres = append(wheres, where.Field+" "+where.Match+" '"+where.Value+"'")
+	case "IN":
+		wheres = append(wheres, where.Field+" IN ("+where.Value+")")
+	case "LIKE":
+		wheres = append(wheres, where.Field+" LIKE '%"+where.Value+"%'")
+	case "LIKE.LEFT":
+		wheres = append(wheres, where.Field+" LIKE '%"+where.Value)
+	case "LIKE.RIGHT":
+		wheres = append(wheres, where.Field+" LIKE '"+where.Value+"%'")
+	case "BETWEEN":
+		values := strings.Split(where.Value, ",")
+		wheres = append(wheres, where.Field+" BETWEEN '"+values[0]+"' AND '"+values[1]+"'")
+	}
+
+	switch strings.ToUpper(where.Value) {
+	case "ISNULL":
+		wheres = append(wheres, where.Field+" IS NULL")
+	case "NOTNULL":
+		wheres = append(wheres, where.Field+" IS NOT NULL")
+	}
+
+	return strings.Join(wheres, " AND ")
 }
