@@ -109,11 +109,11 @@
         },
         {
             "field": "deleted_at",
-            "value": "is null"
+            "value": "isnull"
         },
         {
             "field": "deleted_at",
-            "value": "not null"
+            "value": "notnull"
         }
     ]
 }

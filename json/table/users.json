@@ -4,28 +4,5 @@
     "columns": [],
     "orders": [],
     "wheres": [],
-    "joins": [
-        {
-            "model": "job",
-            "foreign": "id",
-            "key": "master_job_id",
-            "join": "left",
-            "columns": [
-                {
-                    "field": "name"
-                }
-            ]
-        },
-        {
-            "model": "university",
-            "foreign": "id",
-            "key": "master_university_id",
-            "join": "left",
-            "columns": [
-                {
-                    "field": "name"
-                }
-            ]
-        }
-    ]
+    "joins": []
 }

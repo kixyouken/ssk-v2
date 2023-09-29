@@ -104,11 +104,11 @@
         },
         {
             "field": "deleted_at",
-            "value": "is null"
+            "value": "isnull"
         },
         {
             "field": "withdrawaled_at",
-            "value": "not null"
+            "value": "notnull"
         }
     ]
 }
