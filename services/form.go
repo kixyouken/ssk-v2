@@ -62,3 +62,37 @@ func (s *sFormServices) GetModelWithsOrders(c *gin.Context, withs forms.Withs) s
 
 	return strings.Join(orders, ",")
 }
+
+// HandleFormWithsWheres 处理 form.json 文件 withs 下 wheres 信息
+//
+//	@receiver s
+//	@param c
+//	@param where
+//	@return string
+func (s *sFormServices) HandleFormWithsWheres(c *gin.Context, where forms.Wheres) string {
+	wheres := []string{}
+	switch strings.ToUpper(where.Match) {
+	case "=", "!=", "<>", ">", "<", ">=", "<=":
+		wheres = append(wheres, where.Field+" "+where.Match+" '"+where.Value+"'")
+	case "IN":
+		wheres = append(wheres, where.Field+" IN ("+where.Value+")")
+	case "LIKE":
+		wheres = append(wheres, where.Field+" LIKE '%"+where.Value+"%'")
+	case "LIKE.LEFT":
+		wheres = append(wheres, where.Field+" LIKE '%"+where.Value)
+	case "LIKE.RIGHT":
+		wheres = append(wheres, where.Field+" LIKE '"+where.Value+"%'")
+	case "BETWEEN":
+		values := strings.Split(where.Value, ",")
+		wheres = append(wheres, where.Field+" BETWEEN '"+values[0]+"' AND '"+values[1]+"'")
+	}
+
+	switch strings.ToUpper(where.Value) {
+	case "ISNULL":
+		wheres = append(wheres, where.Field+" IS NULL")
+	case "NOTNULL":
+		wheres = append(wheres, where.Field+" IS NOT NULL")
+	}
+
+	return strings.Join(wheres, " AND ")
+}

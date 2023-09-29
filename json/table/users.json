@@ -4,22 +4,22 @@
     "columns": [],
     "orders": [],
     "wheres": [],
-    "joins": [
+    "joins": [],
+    "withs": [
         {
-            "model": "university",
+            "model": "job",
             "foreign": "id",
-            "key": "master_university_id",
-            "join": "left",
+            "key": "master_job_id",
             "columns": [
                 {
                     "field": "name"
                 }
             ],
+            "has": "hasOne",
             "wheres": [
                 {
-                    "field": "id",
-                    "match": "=",
-                    "value": "2"
+                    "field": "deleted_at",
+                    "value": "isnull"
                 }
             ]
         }

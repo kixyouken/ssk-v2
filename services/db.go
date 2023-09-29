@@ -78,9 +78,10 @@ func (s *sDbServices) Count(c *gin.Context, table string, joins []string) int64 
 //	@param out
 //	@param column
 //	@param wheres
+//	@param search
 //	@return error
-func (s *sDbServices) HasOne(c *gin.Context, table string, out interface{}, column interface{}, wheres interface{}) error {
-	return db.Table(table).Where(wheres).
+func (s *sDbServices) HasOne(c *gin.Context, table string, out interface{}, column interface{}, wheres interface{}, search interface{}) error {
+	return db.Table(table).Where(wheres).Where(search).
 		Select(column).
 		Limit(1).
 		Find(out).Error
@@ -95,9 +96,10 @@ func (s *sDbServices) HasOne(c *gin.Context, table string, out interface{}, colu
 //	@param column
 //	@param order
 //	@param wheres
+//	@param search
 //	@return error
-func (s *sDbServices) HasMany(c *gin.Context, table string, out interface{}, column interface{}, order string, wheres interface{}) error {
-	return db.Table(table).Where(wheres).
+func (s *sDbServices) HasMany(c *gin.Context, table string, out interface{}, column interface{}, order string, wheres interface{}, search interface{}) error {
+	return db.Table(table).Where(wheres).Where(search).
 		Scopes(s.Order(order)).
 		Select(column).
 		Find(out).Error

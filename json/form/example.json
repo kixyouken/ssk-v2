@@ -14,7 +14,13 @@
                     "field": "name"
                 }
             ],
-            "has": "hasOne"
+            "has": "hasOne",
+            "wheres": [
+                {
+                    "field": "deleted_at",
+                    "value": "isnull"
+                }
+            ]
         },
         {
             "model": "users",
@@ -34,7 +40,13 @@
                     "sort": "desc"
                 }
             ],
-            "has": "hasMany"
+            "has": "hasMany",
+            "wheres": [
+                {
+                    "field": "deleted_at",
+                    "value": "isnull"
+                }
+            ]
         }
     ],
     "withs_count": [

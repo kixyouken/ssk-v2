@@ -123,11 +123,11 @@ func (s *sTableServices) GetTableJoinsColumns(c *gin.Context, table tables.Table
 			joinColumns := []JoinColumns{}
 			db.Raw("SHOW COLUMNS FROM `" + modelJson.Table + "`").Scan(&joinColumns)
 			for _, v := range joinColumns {
-				columns = append(columns, modelJson.Table+"."+v.Field+" AS join_"+modelJson.Table+"_"+v.Field)
+				columns = append(columns, modelJson.Table+"."+v.Field+" AS joins_"+modelJson.Table+"_"+v.Field)
 			}
 		} else {
 			for _, v := range value.Columns {
-				columns = append(columns, modelJson.Table+"."+v.Field+" AS join_"+modelJson.Table+"_"+v.Field)
+				columns = append(columns, modelJson.Table+"."+v.Field+" AS joins_"+modelJson.Table+"_"+v.Field)
 			}
 		}
 	}
@@ -142,6 +142,40 @@ func (s *sTableServices) GetTableJoinsColumns(c *gin.Context, table tables.Table
 //	@param where
 //	@return string
 func (s *sTableServices) HandleTableJoinsWheres(c *gin.Context, where tables.Wheres) string {
+	wheres := []string{}
+	switch strings.ToUpper(where.Match) {
+	case "=", "!=", "<>", ">", "<", ">=", "<=":
+		wheres = append(wheres, where.Field+" "+where.Match+" '"+where.Value+"'")
+	case "IN":
+		wheres = append(wheres, where.Field+" IN ("+where.Value+")")
+	case "LIKE":
+		wheres = append(wheres, where.Field+" LIKE '%"+where.Value+"%'")
+	case "LIKE.LEFT":
+		wheres = append(wheres, where.Field+" LIKE '%"+where.Value)
+	case "LIKE.RIGHT":
+		wheres = append(wheres, where.Field+" LIKE '"+where.Value+"%'")
+	case "BETWEEN":
+		values := strings.Split(where.Value, ",")
+		wheres = append(wheres, where.Field+" BETWEEN '"+values[0]+"' AND '"+values[1]+"'")
+	}
+
+	switch strings.ToUpper(where.Value) {
+	case "ISNULL":
+		wheres = append(wheres, where.Field+" IS NULL")
+	case "NOTNULL":
+		wheres = append(wheres, where.Field+" IS NOT NULL")
+	}
+
+	return strings.Join(wheres, " AND ")
+}
+
+// HandleTableWithsWheres 处理 table.json 文件 withs 下 wheres 信息
+//
+//	@receiver s
+//	@param c
+//	@param where
+//	@return string
+func (s *sTableServices) HandleTableWithsWheres(c *gin.Context, where tables.Wheres) string {
 	wheres := []string{}
 	switch strings.ToUpper(where.Match) {
 	case "=", "!=", "<>", ">", "<", ">=", "<=":

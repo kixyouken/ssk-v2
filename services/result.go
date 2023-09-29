@@ -21,27 +21,39 @@ var ResultServices = sResultServices{}
 //	@param result
 //	@param form
 func (s *sResultServices) HandleFormWiths(c *gin.Context, result map[string]interface{}, form forms.FormJson) {
-	for _, v := range form.Withs {
-		modelJson := ModelServices.GetModelFile(c, v.Model)
-		if result[v.Key] != nil {
-			columns := FormServices.GetFormWithsColumns(c, v)
-			if v.Has == "hasOne" {
+	for _, value := range form.Withs {
+		modelJson := ModelServices.GetModelFile(c, value.Model)
+		if result[value.Key] != nil {
+			columns := FormServices.GetFormWithsColumns(c, value)
+			if value.Has == "hasOne" {
 				withResult := map[string]interface{}{}
-				DbService.HasOne(c, modelJson.Table, &withResult, columns, map[string]interface{}{v.Foreign: result[v.Key]})
-				result["with_"+modelJson.Table] = withResult
-			} else if v.Has == "hasMany" {
+				wheres := ""
+				if value.Wheres != nil && len(value.Wheres) > 0 {
+					for _, v := range value.Wheres {
+						wheres = FormServices.HandleFormWithsWheres(c, v)
+					}
+				}
+				DbService.HasOne(c, modelJson.Table, &withResult, columns, map[string]interface{}{value.Foreign: result[value.Key]}, wheres)
+				result["withs_"+modelJson.Table] = withResult
+			} else if value.Has == "hasMany" {
 				withResult := []map[string]interface{}{}
-				orders := FormServices.GetModelWithsOrders(c, v)
-				DbService.HasMany(c, modelJson.Table, &withResult, columns, orders, map[string]interface{}{v.Foreign: result[v.Key]})
-				result["with_"+modelJson.Table] = withResult
+				orders := FormServices.GetModelWithsOrders(c, value)
+				wheres := ""
+				if value.Wheres != nil && len(value.Wheres) > 0 {
+					for _, v := range value.Wheres {
+						wheres = FormServices.HandleFormWithsWheres(c, v)
+					}
+				}
+				DbService.HasMany(c, modelJson.Table, &withResult, columns, orders, map[string]interface{}{value.Foreign: result[value.Key]}, wheres)
+				result["withs_"+modelJson.Table] = withResult
 			}
 		} else {
-			if v.Has == "hasOne" {
+			if value.Has == "hasOne" {
 				withResult := map[string]interface{}{}
-				result["with_"+modelJson.Table] = withResult
-			} else if v.Has == "hasMany" {
+				result["withs_"+modelJson.Table] = withResult
+			} else if value.Has == "hasMany" {
 				withResult := []map[string]interface{}{}
-				result["with_"+modelJson.Table] = withResult
+				result["withs_"+modelJson.Table] = withResult
 			}
 		}
 	}
@@ -54,27 +66,39 @@ func (s *sResultServices) HandleFormWiths(c *gin.Context, result map[string]inte
 //	@param result
 //	@param table
 func (s *sResultServices) HandleTableWiths(c *gin.Context, result map[string]interface{}, table tables.TableJson) {
-	for _, v := range table.Withs {
-		modelJson := ModelServices.GetModelFile(c, v.Model)
-		if result[v.Key] != nil {
-			columns := TableServices.GetTableWithsColumns(c, v)
-			if v.Has == "hasOne" {
+	for _, value := range table.Withs {
+		modelJson := ModelServices.GetModelFile(c, value.Model)
+		if result[value.Key] != nil {
+			columns := TableServices.GetTableWithsColumns(c, value)
+			if value.Has == "hasOne" {
 				withResult := map[string]interface{}{}
-				DbService.HasOne(c, modelJson.Table, &withResult, columns, map[string]interface{}{v.Foreign: result[v.Key]})
-				result["with_"+modelJson.Table] = withResult
-			} else if v.Has == "hasMany" {
+				wheres := ""
+				if value.Wheres != nil && len(value.Wheres) > 0 {
+					for _, v := range value.Wheres {
+						wheres = TableServices.HandleTableWithsWheres(c, v)
+					}
+				}
+				DbService.HasOne(c, modelJson.Table, &withResult, columns, map[string]interface{}{value.Foreign: result[value.Key]}, wheres)
+				result["withs_"+modelJson.Table] = withResult
+			} else if value.Has == "hasMany" {
 				withResult := []map[string]interface{}{}
-				orders := TableServices.GetTableWithsOrders(c, v)
-				DbService.HasMany(c, modelJson.Table, &withResult, columns, orders, map[string]interface{}{v.Foreign: result[v.Key]})
-				result["with_"+modelJson.Table] = withResult
+				orders := TableServices.GetTableWithsOrders(c, value)
+				wheres := ""
+				if value.Wheres != nil && len(value.Wheres) > 0 {
+					for _, v := range value.Wheres {
+						wheres = TableServices.HandleTableWithsWheres(c, v)
+					}
+				}
+				DbService.HasMany(c, modelJson.Table, &withResult, columns, orders, map[string]interface{}{value.Foreign: result[value.Key]}, wheres)
+				result["withs_"+modelJson.Table] = withResult
 			}
 		} else {
-			if v.Has == "hasOne" {
+			if value.Has == "hasOne" {
 				withResult := map[string]interface{}{}
-				result["with_"+modelJson.Table] = withResult
-			} else if v.Has == "hasMany" {
+				result["withs_"+modelJson.Table] = withResult
+			} else if value.Has == "hasMany" {
 				withResult := []map[string]interface{}{}
-				result["with_"+modelJson.Table] = withResult
+				result["withs_"+modelJson.Table] = withResult
 			}
 		}
 	}
@@ -99,26 +123,38 @@ func (s *sResultServices) HandleTableWithsList(c *gin.Context, result []map[stri
 //	@param result
 //	@param model
 func (s *sResultServices) HandleModelWiths(c *gin.Context, result map[string]interface{}, model models.ModelJson) {
-	for _, v := range model.Withs {
-		if result[v.Key] != nil {
-			columns := ModelServices.GetModelWithsColumns(c, v)
-			if v.Has == "hasOne" {
+	for _, value := range model.Withs {
+		if result[value.Key] != nil {
+			columns := ModelServices.GetModelWithsColumns(c, value)
+			if value.Has == "hasOne" {
 				withResult := map[string]interface{}{}
-				DbService.HasOne(c, v.Table, &withResult, columns, map[string]interface{}{v.Foreign: result[v.Key]})
-				result["with_"+v.Table] = withResult
-			} else if v.Has == "hasMany" {
-				orders := ModelServices.GetModelWithsOrders(c, v)
+				wheres := ""
+				if value.Wheres != nil && len(value.Wheres) > 0 {
+					for _, v := range value.Wheres {
+						wheres = ModelServices.HandleModelWithsWheres(c, v)
+					}
+				}
+				DbService.HasOne(c, value.Table, &withResult, columns, map[string]interface{}{value.Foreign: result[value.Key]}, wheres)
+				result["withs_"+value.Table] = withResult
+			} else if value.Has == "hasMany" {
+				orders := ModelServices.GetModelWithsOrders(c, value)
 				withResult := []map[string]interface{}{}
-				DbService.HasMany(c, v.Table, &withResult, columns, orders, map[string]interface{}{v.Foreign: result[v.Key]})
-				result["with_"+v.Table] = withResult
+				wheres := ""
+				if value.Wheres != nil && len(value.Wheres) > 0 {
+					for _, v := range value.Wheres {
+						wheres = ModelServices.HandleModelWithsWheres(c, v)
+					}
+				}
+				DbService.HasMany(c, value.Table, &withResult, columns, orders, map[string]interface{}{value.Foreign: result[value.Key]}, wheres)
+				result["withs_"+value.Table] = withResult
 			}
 		} else {
-			if v.Has == "hasOne" {
+			if value.Has == "hasOne" {
 				withResult := map[string]interface{}{}
-				result["with_"+v.Table] = withResult
-			} else if v.Has == "hasMany" {
+				result["withs_"+value.Table] = withResult
+			} else if value.Has == "hasMany" {
 				withResult := []map[string]interface{}{}
-				result["with_"+v.Table] = withResult
+				result["withs_"+value.Table] = withResult
 			}
 		}
 	}

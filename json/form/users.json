@@ -1,5 +1,26 @@
 {
     "name": "用户表格",
     "model": "users",
-    "withs": []
+    "withs": [
+        {
+            "model": "university",
+            "foreign": "id",
+            "key": "master_university_id",
+            "columns": [
+                {
+                    "field": "id"
+                },
+                {
+                    "field": "name"
+                }
+            ],
+            "has": "hasOne",
+            "wheres": [
+                {
+                    "field": "deleted_at",
+                    "value": "isnull"
+                }
+            ]
+        }
+    ]
 }

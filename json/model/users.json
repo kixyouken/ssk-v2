@@ -2,7 +2,9 @@
     "name": "用户表",
     "table": "users",
     "joins": [],
-    "withs": [],
+    "withs": [
+       
+    ],
     "columns": [
         {
             "field": "id"
