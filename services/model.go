@@ -159,13 +159,13 @@ func (s *sModelServices) HandleModelJoinsWheres(c *gin.Context, where models.Whe
 	case "BETWEEN":
 		values := strings.Split(where.Value, ",")
 		wheres = append(wheres, where.Field+" BETWEEN '"+values[0]+"' AND '"+values[1]+"'")
-	}
-
-	switch strings.ToUpper(where.Value) {
-	case "ISNULL":
-		wheres = append(wheres, where.Field+" IS NULL")
-	case "NOTNULL":
-		wheres = append(wheres, where.Field+" IS NOT NULL")
+	case "IS":
+		switch strings.ToUpper(where.Value) {
+		case "NULL":
+			wheres = append(wheres, where.Field+" IS NULL")
+		case "NOTNULL":
+			wheres = append(wheres, where.Field+" IS NOT NULL")
+		}
 	}
 
 	return strings.Join(wheres, " AND ")
@@ -193,13 +193,13 @@ func (s *sModelServices) HandleModelWithsWheres(c *gin.Context, where models.Whe
 	case "BETWEEN":
 		values := strings.Split(where.Value, ",")
 		wheres = append(wheres, where.Field+" BETWEEN '"+values[0]+"' AND '"+values[1]+"'")
-	}
-
-	switch strings.ToUpper(where.Value) {
-	case "ISNULL":
-		wheres = append(wheres, where.Field+" IS NULL")
-	case "NOTNULL":
-		wheres = append(wheres, where.Field+" IS NOT NULL")
+	case "IS":
+		switch strings.ToUpper(where.Value) {
+		case "NULL":
+			wheres = append(wheres, where.Field+" IS NULL")
+		case "NOTNULL":
+			wheres = append(wheres, where.Field+" IS NOT NULL")
+		}
 	}
 
 	return strings.Join(wheres, " AND ")

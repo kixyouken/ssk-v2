@@ -15,7 +15,8 @@
             "wheres": [
                 {
                     "field": "deleted_at",
-                    "value": "isnull"
+                    "match": "is",
+                    "value": "null"
                 }
             ]
         }
@@ -37,7 +38,8 @@
             "wheres": [
                 {
                     "field": "deleted_at",
-                    "value": "isnull"
+                    "match": "is",
+                    "value": "null"
                 }
             ]
         },
@@ -63,7 +65,8 @@
             "wheres": [
                 {
                     "field": "deleted_at",
-                    "value": "isnull"
+                    "match": "is",
+                    "value": "null"
                 }
             ]
         }
@@ -122,10 +125,12 @@
         },
         {
             "field": "deleted_at",
-            "value": "isnull"
+            "match": "is",
+            "value": "null"
         },
         {
             "field": "withdrawaled_at",
+            "match": "is",
             "value": "notnull"
         }
     ]

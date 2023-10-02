@@ -232,13 +232,13 @@ func (s *sResultServices) HandleTableWithsCount(c *gin.Context, result map[strin
 				case "BETWEEN":
 					values := strings.Split(v.Value, ",")
 					withsWheres = append(withsWheres, v.Field+" BETWEEN '"+values[0]+"' AND '"+values[1]+"'")
-				}
-
-				switch strings.ToUpper(v.Value) {
-				case "ISNULL":
-					withsWheres = append(withsWheres, v.Field+" IS NULL")
-				case "NOTNULL":
-					withsWheres = append(withsWheres, v.Field+" IS NOT NULL")
+				case "IS":
+					switch strings.ToUpper(v.Value) {
+					case "NULL":
+						withsWheres = append(withsWheres, v.Field+" IS NULL")
+					case "NOTNULL":
+						withsWheres = append(withsWheres, v.Field+" IS NOT NULL")
+					}
 				}
 			}
 		}
@@ -286,13 +286,13 @@ func (s *sResultServices) HandleFormWithsCount(c *gin.Context, result map[string
 				case "BETWEEN":
 					values := strings.Split(v.Value, ",")
 					withsWheres = append(withsWheres, v.Field+" BETWEEN '"+values[0]+"' AND '"+values[1]+"'")
-				}
-
-				switch strings.ToUpper(v.Value) {
-				case "ISNULL":
-					withsWheres = append(withsWheres, v.Field+" IS NULL")
-				case "NOTNULL":
-					withsWheres = append(withsWheres, v.Field+" IS NOT NULL")
+				case "IS":
+					switch strings.ToUpper(v.Value) {
+					case "NULL":
+						withsWheres = append(withsWheres, v.Field+" IS NULL")
+					case "NOTNULL":
+						withsWheres = append(withsWheres, v.Field+" IS NOT NULL")
+					}
 				}
 			}
 		}

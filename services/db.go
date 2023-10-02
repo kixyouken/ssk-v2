@@ -241,13 +241,13 @@ func (s *sDbServices) Wheres(c *gin.Context) func(db *gorm.DB) *gorm.DB {
 				case "BETWEEN":
 					values := strings.Split(v.Value, ",")
 					db.Where(v.Field+" BETWEEN ? AND ?", values[0], values[1])
-				}
-
-				switch strings.ToUpper(v.Value) {
-				case "ISNULL":
-					db.Where(v.Field + " IS NULL")
-				case "NOTNULL":
-					db.Where(v.Field + " IS NOT NULL")
+				case "IS":
+					switch strings.ToUpper(v.Value) {
+					case "NULL":
+						db.Where(v.Field + " IS NULL")
+					case "NOTNULL":
+						db.Where(v.Field + " IS NOT NULL")
+					}
 				}
 			}
 		}
@@ -268,13 +268,13 @@ func (s *sDbServices) Wheres(c *gin.Context) func(db *gorm.DB) *gorm.DB {
 				case "BETWEEN":
 					values := strings.Split(v.Value, ",")
 					db.Where(v.Field+" BETWEEN ? AND ?", values[0], values[1])
-				}
-
-				switch strings.ToUpper(v.Value) {
-				case "ISNULL":
-					db.Where(v.Field + " IS NULL")
-				case "NOTNULL":
-					db.Where(v.Field + " IS NOT NULL")
+				case "IS":
+					switch strings.ToUpper(v.Value) {
+					case "NULL":
+						db.Where(v.Field + " IS NULL")
+					case "NOTNULL":
+						db.Where(v.Field + " IS NOT NULL")
+					}
 				}
 			}
 		}
@@ -284,9 +284,9 @@ func (s *sDbServices) Wheres(c *gin.Context) func(db *gorm.DB) *gorm.DB {
 
 // Search 搜索条件
 // 规则1: 表名.字段@条件=值 (如果未 join 表名可省略)
-// 规则2: 表名.字段=null
-// 规则3: 表名.字段=notnull
-// id@==100000000&users.name@like.left=test&users.deleted_at=notnull
+// 规则2: 表名.字段@条件=null
+// 规则3: 表名.字段@条件=notnull
+// id@==100000000&users.name@like.left=test&users.deleted_at@is=notnull
 //
 //	@receiver s
 //	@param c
@@ -301,29 +301,27 @@ func (s *sDbServices) Search(c *gin.Context) func(db *gorm.DB) *gorm.DB {
 				keys[1] += "="
 				v[0] = strings.TrimLeft(v[0], "=")
 			}
-			if len(keys) > 1 {
-				switch strings.ToUpper(keys[1]) {
-				case "=", "!=", "<>", ">", "<", ">=", "<=":
-					db.Where(keys[0]+" "+keys[1]+" ?", v[0])
-				case "IN":
-					db.Where(keys[0]+" IN ?", strings.Split(v[0], ","))
-				case "LIKE":
-					db.Where(keys[0]+" LIKE ?", "%"+v[0]+"%")
-				case "LIKE.LEFT":
-					db.Where(keys[0]+" LIKE ?", "%"+v[0])
-				case "LIKE.RIGHT":
-					db.Where(keys[0]+" LIKE ?", v[0]+"%")
-				case "BETWEEN":
-					values := strings.Split(v[0], ",")
-					db.Where(keys[0]+" BETWEEN ? AND ?", values[0], values[1])
+			switch strings.ToUpper(keys[1]) {
+			case "=", "!=", "<>", ">", "<", ">=", "<=":
+				db.Where(keys[0]+" "+keys[1]+" ?", v[0])
+			case "IN":
+				db.Where(keys[0]+" IN ?", strings.Split(v[0], ","))
+			case "LIKE":
+				db.Where(keys[0]+" LIKE ?", "%"+v[0]+"%")
+			case "LIKE.LEFT":
+				db.Where(keys[0]+" LIKE ?", "%"+v[0])
+			case "LIKE.RIGHT":
+				db.Where(keys[0]+" LIKE ?", v[0]+"%")
+			case "BETWEEN":
+				values := strings.Split(v[0], ",")
+				db.Where(keys[0]+" BETWEEN ? AND ?", values[0], values[1])
+			case "IS":
+				switch strings.ToUpper(v[0]) {
+				case "NULL":
+					db.Where(keys[0] + " IS NULL")
+				case "NOTNULL":
+					db.Where(keys[0] + " IS NOT NULL")
 				}
-			}
-
-			switch strings.ToUpper(v[0]) {
-			case "ISNULL":
-				db.Where(keys[0] + " IS NULL")
-			case "NOTNULL":
-				db.Where(keys[0] + " IS NOT NULL")
 			}
 		}
 		return db
