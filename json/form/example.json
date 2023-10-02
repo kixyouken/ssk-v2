@@ -69,5 +69,21 @@
                 }
             ]
         }
+    ],
+    "withs_sum": [
+        {
+            "model": "event_users",
+            "foreign": "user_id",
+            "key": "id",
+            "columns": [
+                {
+                    "field": "event_id"
+                },
+                {
+                    "field": "event_meeting_schedule_id"
+                }
+            ],
+            "wheres": []
+        }
     ]
 }

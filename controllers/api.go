@@ -58,8 +58,16 @@ func Page(c *gin.Context) {
 		services.ResultServices.HandleModelWithsCountList(c, result, *modelJson)
 	}
 
+	if modelJson.WithsSum != nil && len(modelJson.WithsSum) > 0 {
+		services.ResultServices.HandleModelWithsSumList(c, result, *modelJson)
+	}
+
 	if tableJson.WithsCount != nil && len(tableJson.WithsCount) > 0 {
 		services.ResultServices.HandleTableWithsCountList(c, result, *tableJson)
+	}
+
+	if tableJson.WithsSum != nil && len(tableJson.WithsSum) > 0 {
+		services.ResultServices.HandleTableWithsSumList(c, result, *tableJson)
 	}
 
 	if modelJson.Columns != nil && len(modelJson.Columns) > 0 {
@@ -96,12 +104,20 @@ func Read(c *gin.Context) {
 		services.ResultServices.HandleModelWithsCount(c, result, *modelJson)
 	}
 
+	if modelJson.WithsSum != nil && len(modelJson.WithsSum) > 0 {
+		services.ResultServices.HandleModelWithsSum(c, result, *modelJson)
+	}
+
 	if formJson.Withs != nil && len(formJson.Withs) > 0 {
 		services.ResultServices.HandleFormWiths(c, result, *formJson)
 	}
 
 	if formJson.WithsCount != nil && len(formJson.WithsCount) > 0 {
 		services.ResultServices.HandleFormWithsCount(c, result, *formJson)
+	}
+
+	if formJson.WithsSum != nil && len(formJson.WithsSum) > 0 {
+		services.ResultServices.HandleFormWithsSum(c, result, *formJson)
 	}
 
 	if modelJson.Columns != nil && len(modelJson.Columns) > 0 {

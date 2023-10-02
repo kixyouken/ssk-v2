@@ -1,27 +1,21 @@
 {
     "name": "用户表格",
     "model": "users",
-    "withs": [
+    "withs": [],
+    "withs_sum": [
         {
-            "model": "university",
-            "foreign": "id",
-            "key": "master_university_id",
+            "model": "event_users",
+            "foreign": "user_id",
+            "key": "id",
             "columns": [
                 {
-                    "field": "id"
+                    "field": "event_id"
                 },
                 {
-                    "field": "name"
+                    "field": "event_meeting_schedule_id"
                 }
             ],
-            "has": "hasOne",
-            "wheres": [
-                {
-                    "field": "deleted_at",
-                    "match": "is",
-                    "value": "null"
-                }
-            ]
+            "wheres": []
         }
     ]
 }

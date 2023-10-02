@@ -1,34 +1,10 @@
 {
     "name": "用户表",
     "table": "users",
-    "joins": [
-        {
-            "table": "master_university",
-            "foreign": "id",
-            "key": "master_university_id",
-            "join": "left",
-            "columns": [
-                {
-                    "field": "name"
-                }
-            ],
-            "wheres": [
-                {
-                    "field": "deleted_at",
-                    "match": "is",
-                    "value": "null"
-                },
-                {
-                    "field": "id",
-                    "match": "in",
-                    "value": "1,2,3,4,5"
-                }
-            ]
-        }
-    ],
-    "withs": [
-        
-    ],
+    "joins": [],
+    "withs": [],
+    "withs_count": [],
+    "withs_sum": [],
     "columns": [
         {
             "field": "id"

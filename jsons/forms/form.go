@@ -5,6 +5,7 @@ type FormJson struct {
 	Model      string       `json:"model"`
 	Withs      []Withs      `json:"withs"`
 	WithsCount []WithsCount `json:"withs_count"`
+	WithsSum   []WithsSum   `json:"withs_sum"`
 }
 
 type Withs struct {
@@ -38,4 +39,12 @@ type Wheres struct {
 	Field string `json:"field"`
 	Match string `json:"match"`
 	Value string `json:"value"`
+}
+
+type WithsSum struct {
+	Model   string    `json:"model"`
+	Foreign string    `json:"foreign"`
+	Key     string    `json:"key"`
+	Wheres  []Wheres  `json:"wheres"`
+	Columns []Columns `json:"columns"`
 }
