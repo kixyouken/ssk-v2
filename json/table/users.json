@@ -6,6 +6,28 @@
     "wheres": [],
     "joins": [],
     "withs": [
-        
+        {
+            "model": "job",
+            "foreign": "id",
+            "key": "master_job_id",
+            "columns": [
+                {
+                    "field": "name"
+                }
+            ],
+            "has": "hasOne",
+            "wheres": [
+                {
+                    "field": "flag_show",
+                    "match": "=",
+                    "value": "1"
+                },
+                {
+                    "field": "deleted_at",
+                    "match": "is",
+                    "value": "null"
+                }
+            ]
+        }
     ]
 }

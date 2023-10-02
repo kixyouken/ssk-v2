@@ -67,32 +67,34 @@ func (s *sFormServices) GetModelWithsOrders(c *gin.Context, withs forms.Withs) s
 //
 //	@receiver s
 //	@param c
-//	@param where
+//	@param wheres
 //	@return string
-func (s *sFormServices) HandleFormWithsWheres(c *gin.Context, where forms.Wheres) string {
-	wheres := []string{}
-	switch strings.ToUpper(where.Match) {
-	case "=", "!=", "<>", ">", "<", ">=", "<=":
-		wheres = append(wheres, where.Field+" "+where.Match+" '"+where.Value+"'")
-	case "IN":
-		wheres = append(wheres, where.Field+" IN ("+where.Value+")")
-	case "LIKE":
-		wheres = append(wheres, where.Field+" LIKE '%"+where.Value+"%'")
-	case "LIKE.LEFT":
-		wheres = append(wheres, where.Field+" LIKE '%"+where.Value)
-	case "LIKE.RIGHT":
-		wheres = append(wheres, where.Field+" LIKE '"+where.Value+"%'")
-	case "BETWEEN":
-		values := strings.Split(where.Value, ",")
-		wheres = append(wheres, where.Field+" BETWEEN '"+values[0]+"' AND '"+values[1]+"'")
-	case "IS":
-		switch strings.ToUpper(where.Value) {
-		case "NULL":
-			wheres = append(wheres, where.Field+" IS NULL")
-		case "NOTNULL":
-			wheres = append(wheres, where.Field+" IS NOT NULL")
+func (s *sFormServices) HandleFormWithsWheres(c *gin.Context, wheres []forms.Wheres) string {
+	whereSlice := []string{}
+	for _, v := range wheres {
+		switch strings.ToUpper(v.Match) {
+		case "=", "!=", "<>", ">", "<", ">=", "<=":
+			whereSlice = append(whereSlice, v.Field+" "+v.Match+" '"+v.Value+"'")
+		case "IN":
+			whereSlice = append(whereSlice, v.Field+" IN ("+v.Value+")")
+		case "LIKE":
+			whereSlice = append(whereSlice, v.Field+" LIKE '%"+v.Value+"%'")
+		case "LIKE.LEFT":
+			whereSlice = append(whereSlice, v.Field+" LIKE '%"+v.Value)
+		case "LIKE.RIGHT":
+			whereSlice = append(whereSlice, v.Field+" LIKE '"+v.Value+"%'")
+		case "BETWEEN":
+			values := strings.Split(v.Value, ",")
+			whereSlice = append(whereSlice, v.Field+" BETWEEN '"+values[0]+"' AND '"+values[1]+"'")
+		case "IS":
+			switch strings.ToUpper(v.Value) {
+			case "NULL":
+				whereSlice = append(whereSlice, v.Field+" IS NULL")
+			case "NOTNULL":
+				whereSlice = append(whereSlice, v.Field+" IS NOT NULL")
+			}
 		}
 	}
 
-	return strings.Join(wheres, " AND ")
+	return strings.Join(whereSlice, " AND ")
 }

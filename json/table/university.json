@@ -23,6 +23,11 @@
             "has": "hasMany",
             "wheres": [
                 {
+                    "field": "id",
+                    "match": "<>",
+                    "value": "1"
+                },
+                {
                     "field": "deleted_at",
                     "match": "is",
                     "value": "null"

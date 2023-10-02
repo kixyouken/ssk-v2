@@ -1,8 +1,12 @@
 {
     "name": "用户表",
     "table": "users",
-    "joins": [],
-    "withs": [],
+    "joins": [
+       
+    ],
+    "withs": [
+        
+    ],
     "columns": [
         {
             "field": "id"

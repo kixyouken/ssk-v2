@@ -17,6 +17,34 @@
                     "field": "deleted_at",
                     "match": "is",
                     "value": "null"
+                },
+                {
+                    "field": "flag_show",
+                    "match": "=",
+                    "value": "1"
+                }
+            ]
+        },
+        {
+            "table": "master_job",
+            "foreign": "id",
+            "key": "master_job_id",
+            "join": "left",
+            "columns": [
+                {
+                    "field": "name"
+                }
+            ],
+            "wheres": [
+                {
+                    "field": "deleted_at",
+                    "match": "is",
+                    "value": "null"
+                },
+                {
+                    "field": "flag_show",
+                    "match": "=",
+                    "value": "1"
                 }
             ]
         }

@@ -29,9 +29,7 @@ func (s *sResultServices) HandleFormWiths(c *gin.Context, result map[string]inte
 				withResult := map[string]interface{}{}
 				wheres := ""
 				if value.Wheres != nil && len(value.Wheres) > 0 {
-					for _, v := range value.Wheres {
-						wheres = FormServices.HandleFormWithsWheres(c, v)
-					}
+					wheres = FormServices.HandleFormWithsWheres(c, value.Wheres)
 				}
 				DbService.HasOne(c, modelJson.Table, &withResult, columns, map[string]interface{}{value.Foreign: result[value.Key]}, wheres)
 				result["withs_"+modelJson.Table] = withResult
@@ -40,21 +38,13 @@ func (s *sResultServices) HandleFormWiths(c *gin.Context, result map[string]inte
 				orders := FormServices.GetModelWithsOrders(c, value)
 				wheres := ""
 				if value.Wheres != nil && len(value.Wheres) > 0 {
-					for _, v := range value.Wheres {
-						wheres = FormServices.HandleFormWithsWheres(c, v)
-					}
+					wheres = FormServices.HandleFormWithsWheres(c, value.Wheres)
 				}
 				DbService.HasMany(c, modelJson.Table, &withResult, columns, orders, map[string]interface{}{value.Foreign: result[value.Key]}, wheres)
 				result["withs_"+modelJson.Table] = withResult
 			}
 		} else {
-			if value.Has == "hasOne" {
-				withResult := map[string]interface{}{}
-				result["withs_"+modelJson.Table] = withResult
-			} else if value.Has == "hasMany" {
-				withResult := []map[string]interface{}{}
-				result["withs_"+modelJson.Table] = withResult
-			}
+			result["withs_"+modelJson.Table] = nil
 		}
 	}
 }
@@ -74,9 +64,7 @@ func (s *sResultServices) HandleTableWiths(c *gin.Context, result map[string]int
 				withResult := map[string]interface{}{}
 				wheres := ""
 				if value.Wheres != nil && len(value.Wheres) > 0 {
-					for _, v := range value.Wheres {
-						wheres = TableServices.HandleTableWithsWheres(c, v)
-					}
+					wheres = TableServices.HandleTableWithsWheres(c, value.Wheres)
 				}
 				DbService.HasOne(c, modelJson.Table, &withResult, columns, map[string]interface{}{value.Foreign: result[value.Key]}, wheres)
 				result["withs_"+modelJson.Table] = withResult
@@ -85,21 +73,13 @@ func (s *sResultServices) HandleTableWiths(c *gin.Context, result map[string]int
 				orders := TableServices.GetTableWithsOrders(c, value)
 				wheres := ""
 				if value.Wheres != nil && len(value.Wheres) > 0 {
-					for _, v := range value.Wheres {
-						wheres = TableServices.HandleTableWithsWheres(c, v)
-					}
+					wheres = TableServices.HandleTableWithsWheres(c, value.Wheres)
 				}
 				DbService.HasMany(c, modelJson.Table, &withResult, columns, orders, map[string]interface{}{value.Foreign: result[value.Key]}, wheres)
 				result["withs_"+modelJson.Table] = withResult
 			}
 		} else {
-			if value.Has == "hasOne" {
-				withResult := map[string]interface{}{}
-				result["withs_"+modelJson.Table] = withResult
-			} else if value.Has == "hasMany" {
-				withResult := []map[string]interface{}{}
-				result["withs_"+modelJson.Table] = withResult
-			}
+			result["withs_"+modelJson.Table] = nil
 		}
 	}
 }
@@ -130,9 +110,7 @@ func (s *sResultServices) HandleModelWiths(c *gin.Context, result map[string]int
 				withResult := map[string]interface{}{}
 				wheres := ""
 				if value.Wheres != nil && len(value.Wheres) > 0 {
-					for _, v := range value.Wheres {
-						wheres = ModelServices.HandleModelWithsWheres(c, v)
-					}
+					wheres = ModelServices.HandleModelWithsWheres(c, value.Wheres)
 				}
 				DbService.HasOne(c, value.Table, &withResult, columns, map[string]interface{}{value.Foreign: result[value.Key]}, wheres)
 				result["withs_"+value.Table] = withResult
@@ -141,21 +119,13 @@ func (s *sResultServices) HandleModelWiths(c *gin.Context, result map[string]int
 				withResult := []map[string]interface{}{}
 				wheres := ""
 				if value.Wheres != nil && len(value.Wheres) > 0 {
-					for _, v := range value.Wheres {
-						wheres = ModelServices.HandleModelWithsWheres(c, v)
-					}
+					wheres = ModelServices.HandleModelWithsWheres(c, value.Wheres)
 				}
 				DbService.HasMany(c, value.Table, &withResult, columns, orders, map[string]interface{}{value.Foreign: result[value.Key]}, wheres)
 				result["withs_"+value.Table] = withResult
 			}
 		} else {
-			if value.Has == "hasOne" {
-				withResult := map[string]interface{}{}
-				result["withs_"+value.Table] = withResult
-			} else if value.Has == "hasMany" {
-				withResult := []map[string]interface{}{}
-				result["withs_"+value.Table] = withResult
-			}
+			result["withs_"+value.Table] = nil
 		}
 	}
 }
