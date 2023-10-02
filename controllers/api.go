@@ -54,6 +54,10 @@ func Page(c *gin.Context) {
 		services.ResultServices.HandleTableWithsList(c, result, *tableJson)
 	}
 
+	if modelJson.WithsCount != nil && len(modelJson.WithsCount) > 0 {
+		services.ResultServices.HandleModelWithsCountList(c, result, *modelJson)
+	}
+
 	if tableJson.WithsCount != nil && len(tableJson.WithsCount) > 0 {
 		services.ResultServices.HandleTableWithsCountList(c, result, *tableJson)
 	}
@@ -86,6 +90,10 @@ func Read(c *gin.Context) {
 
 	if modelJson.Withs != nil && len(modelJson.Withs) > 0 {
 		services.ResultServices.HandleModelWiths(c, result, *modelJson)
+	}
+
+	if modelJson.WithsCount != nil && len(modelJson.WithsCount) > 0 {
+		services.ResultServices.HandleModelWithsCount(c, result, *modelJson)
 	}
 
 	if formJson.Withs != nil && len(formJson.Withs) > 0 {
