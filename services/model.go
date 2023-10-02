@@ -49,8 +49,6 @@ func (s *sModelServices) GetModelColumns(c *gin.Context, model models.ModelJson)
 		}
 	}
 
-	joinColumns := s.GetModelJoinsColumns(c, model)
-	columns = append(columns, joinColumns...)
 	return columns
 }
 

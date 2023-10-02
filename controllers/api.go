@@ -32,6 +32,11 @@ func Page(c *gin.Context) {
 	orders := services.TableServices.GetTableOrders(c, *tableJson)
 	joins := services.ModelServices.GetModelJoins(c, *modelJson)
 
+	if modelJson.Joins != nil && len(modelJson.Joins) > 0 {
+		modelJoinsColumns := services.ModelServices.GetModelJoinsColumns(c, *modelJson)
+		columns = append(columns, modelJoinsColumns...)
+	}
+
 	if tableJson.Joins != nil && len(tableJson.Joins) > 0 {
 		tableJoins := services.TableServices.GetTableJoins(c, *tableJson)
 		joins = append(joins, tableJoins...)
@@ -123,6 +128,7 @@ func Read(c *gin.Context) {
 	if modelJson.Columns != nil && len(modelJson.Columns) > 0 {
 		services.ResultServices.HandleModelFieldFormat(c, result, *modelJson)
 	}
+
 	c.JSON(200, gin.H{
 		"message": "Read",
 		"data":    result,
