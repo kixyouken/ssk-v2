@@ -200,7 +200,7 @@ func (s *sResultServices) HandleTableWithsCount(c *gin.Context, result map[strin
 				case "LIKE.RIGHT":
 					withsWheres = append(withsWheres, v.Field+" LIKE '"+v.Value+"%'")
 				case "BETWEEN":
-					values := strings.Split(v.Value, ",")
+					values := strings.Split(v.Value, "~")
 					withsWheres = append(withsWheres, v.Field+" BETWEEN '"+values[0]+"' AND '"+values[1]+"'")
 				case "IS":
 					switch strings.ToUpper(v.Value) {
@@ -254,7 +254,7 @@ func (s *sResultServices) HandleFormWithsCount(c *gin.Context, result map[string
 				case "LIKE.RIGHT":
 					withsWheres = append(withsWheres, v.Field+" LIKE '"+v.Value+"%'")
 				case "BETWEEN":
-					values := strings.Split(v.Value, ",")
+					values := strings.Split(v.Value, "~")
 					withsWheres = append(withsWheres, v.Field+" BETWEEN '"+values[0]+"' AND '"+values[1]+"'")
 				case "IS":
 					switch strings.ToUpper(v.Value) {

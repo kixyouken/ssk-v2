@@ -84,7 +84,7 @@ func (s *sFormServices) HandleFormWithsWheres(c *gin.Context, wheres []forms.Whe
 		case "LIKE.RIGHT":
 			whereSlice = append(whereSlice, v.Field+" LIKE '"+v.Value+"%'")
 		case "BETWEEN":
-			values := strings.Split(v.Value, ",")
+			values := strings.Split(v.Value, "~")
 			whereSlice = append(whereSlice, v.Field+" BETWEEN '"+values[0]+"' AND '"+values[1]+"'")
 		case "IS":
 			switch strings.ToUpper(v.Value) {

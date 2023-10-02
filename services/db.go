@@ -227,6 +227,9 @@ func (s *sDbServices) Wheres(c *gin.Context) func(db *gorm.DB) *gorm.DB {
 
 		if tableJson.Wheres != nil && len(tableJson.Wheres) > 0 {
 			for _, v := range tableJson.Wheres {
+				if !strings.Contains(v.Field, ".") {
+					v.Field = modelJson.Table + "." + v.Field
+				}
 				switch strings.ToUpper(v.Match) {
 				case "=", "!=", "<>", ">", "<", ">=", "<=":
 					db.Where(v.Field+" "+v.Match+" ?", v.Value)
@@ -239,7 +242,7 @@ func (s *sDbServices) Wheres(c *gin.Context) func(db *gorm.DB) *gorm.DB {
 				case "LIKE.RIGHT":
 					db.Where(v.Field+" LIKE ?", v.Value+"%")
 				case "BETWEEN":
-					values := strings.Split(v.Value, ",")
+					values := strings.Split(v.Value, "~")
 					db.Where(v.Field+" BETWEEN ? AND ?", values[0], values[1])
 				case "IS":
 					switch strings.ToUpper(v.Value) {
@@ -254,6 +257,9 @@ func (s *sDbServices) Wheres(c *gin.Context) func(db *gorm.DB) *gorm.DB {
 
 		if modelJson.Wheres != nil && len(modelJson.Wheres) > 0 {
 			for _, v := range modelJson.Wheres {
+				if !strings.Contains(v.Field, ".") {
+					v.Field = modelJson.Table + "." + v.Field
+				}
 				switch strings.ToUpper(v.Match) {
 				case "=", "!=", "<>", ">", "<", ">=", "<=":
 					db.Where(v.Field+" "+v.Match+" ?", v.Value)
@@ -266,7 +272,7 @@ func (s *sDbServices) Wheres(c *gin.Context) func(db *gorm.DB) *gorm.DB {
 				case "LIKE.RIGHT":
 					db.Where(v.Field+" LIKE ?", v.Value+"%")
 				case "BETWEEN":
-					values := strings.Split(v.Value, ",")
+					values := strings.Split(v.Value, "~")
 					db.Where(v.Field+" BETWEEN ? AND ?", values[0], values[1])
 				case "IS":
 					switch strings.ToUpper(v.Value) {
@@ -313,7 +319,7 @@ func (s *sDbServices) Search(c *gin.Context) func(db *gorm.DB) *gorm.DB {
 			case "LIKE.RIGHT":
 				db.Where(keys[0]+" LIKE ?", v[0]+"%")
 			case "BETWEEN":
-				values := strings.Split(v[0], ",")
+				values := strings.Split(v[0], "~")
 				db.Where(keys[0]+" BETWEEN ? AND ?", values[0], values[1])
 			case "IS":
 				switch strings.ToUpper(v[0]) {
