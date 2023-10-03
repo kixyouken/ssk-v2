@@ -29,12 +29,17 @@ func Page(c *gin.Context) {
 	tableJson := services.TableServices.GetTableFile(c, table)
 	modelJson := services.ModelServices.GetModelFile(c, tableJson.Model)
 	columns := services.ModelServices.GetModelColumns(c, *modelJson)
-	orders := services.TableServices.GetTableOrders(c, *tableJson)
+	orders := services.ModelServices.GetModelOrders(c, *modelJson)
 	joins := services.ModelServices.GetModelJoins(c, *modelJson)
 
 	if modelJson.Joins != nil && len(modelJson.Joins) > 0 {
 		modelJoinsColumns := services.ModelServices.GetModelJoinsColumns(c, *modelJson)
 		columns = append(columns, modelJoinsColumns...)
+	}
+
+	if modelJson.JoinsCount != nil && len(modelJson.JoinsCount) > 0 {
+		modelJoinsCountColumns := services.ModelServices.GetModelJoinsCountColumns(c, *modelJson)
+		columns = append(columns, modelJoinsCountColumns...)
 	}
 
 	if tableJson.Joins != nil && len(tableJson.Joins) > 0 {
@@ -43,6 +48,17 @@ func Page(c *gin.Context) {
 
 		tableJoinsColumns := services.TableServices.GetTableJoinsColumns(c, *tableJson)
 		columns = append(columns, tableJoinsColumns...)
+	}
+
+	if modelJson.JoinsCount != nil && len(modelJson.JoinsCount) > 0 {
+		modelJoinsCountOrders := services.ModelServices.GetModelJoinsCountOrders(c, *modelJson)
+		if modelJoinsCountOrders != "" {
+			orders = modelJoinsCountOrders + ", " + orders
+		}
+	}
+
+	if tableJson.Orders != nil && len(tableJson.Orders) > 0 {
+		orders += ", " + services.TableServices.GetTableOrders(c, *tableJson)
 	}
 
 	result := []map[string]interface{}{}

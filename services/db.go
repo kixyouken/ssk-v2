@@ -45,8 +45,13 @@ func (s *sDbServices) Get(c *gin.Context, table string, out interface{}, column 
 //	@return error
 func (s *sDbServices) Page(c *gin.Context, table string, out interface{}, column interface{}, order string, joins []string) error {
 	return db.Table(table).
-		Scopes(s.Paginate(c), s.Order(order), s.Joins(joins...), s.Wheres(c), s.Search(c)).
 		Select(column).
+		Scopes(s.Order(order),
+			s.Paginate(c),
+			s.Joins(joins...),
+			s.Wheres(c),
+			s.Search(c),
+			s.JoinsCount(c)).
 		Find(out).Error
 }
 
@@ -225,6 +230,28 @@ func (s *sDbServices) Joins(joins ...string) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
 		for _, v := range joins {
 			db.Joins(v)
+		}
+		return db
+	}
+}
+
+// JoinsCount joinCount 关联，主要用于关联统计时排序
+//
+//	@receiver s
+//	@param c
+//	@return db
+//	@return func(db *gorm.DB) *gorm.DB
+func (s *sDbServices) JoinsCount(c *gin.Context) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		table := c.Param("table")
+		tableJson := TableServices.GetTableFile(c, table)
+		modelJson := ModelServices.GetModelFile(c, tableJson.Model)
+
+		if modelJson.JoinsCount != nil && len(modelJson.JoinsCount) > 0 {
+			for _, value := range modelJson.JoinsCount {
+				joinTable := strings.ToUpper(value.Join) + " JOIN " + value.Table + " ON " + value.Table + "." + value.Foreign + " = " + modelJson.Table + "." + value.Key
+				db.Joins(joinTable).Group(modelJson.Table + "." + value.Key)
+			}
 		}
 		return db
 	}

@@ -52,6 +52,53 @@ func (s *sModelServices) GetModelColumns(c *gin.Context, model models.ModelJson)
 	return columns
 }
 
+// GetModelOrders 获取 model.json 文件 orders 信息
+//
+//	@receiver s
+//	@param c
+//	@param model
+//	@return string
+func (s *sModelServices) GetModelOrders(c *gin.Context, model models.ModelJson) string {
+	orders := []string{}
+	for _, v := range model.Orders {
+		orders = append(orders, model.Table+"."+v.Field+" "+strings.ToUpper(v.Sort))
+	}
+	return strings.Join(orders, ",")
+}
+
+// GetModelJoinsCountOrders 获取 model.json 文件 joinCount 下 orders 信息
+//
+//	@receiver s
+//	@param c
+//	@param model
+//	@return string
+func (s *sModelServices) GetModelJoinsCountOrders(c *gin.Context, model models.ModelJson) string {
+	orders := []string{}
+	for _, value := range model.JoinsCount {
+		for _, v := range value.Orders {
+			orders = append(orders, value.Table+"_"+v.Field+"_count "+strings.ToUpper(v.Sort))
+		}
+	}
+	return strings.Join(orders, ",")
+}
+
+// GetModelJoinsCountColumns 获取 model.json 文件 joinCount 下 columns 信息
+//
+//	@receiver s
+//	@param c
+//	@param model
+//	@return []string
+func (s *sModelServices) GetModelJoinsCountColumns(c *gin.Context, model models.ModelJson) []string {
+	columns := []string{}
+	for _, value := range model.JoinsCount {
+		for _, v := range value.Columns {
+			columns = append(columns, "COUNT( "+model.Table+"."+v.Field+" ) AS "+value.Table+"_"+v.Field+"_count")
+		}
+	}
+
+	return columns
+}
+
 // GetModelJoins 获取 model.json 文件 joins 信息
 //
 //	@receiver s

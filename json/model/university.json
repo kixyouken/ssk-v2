@@ -12,21 +12,41 @@
             "format": "Y-m-d H:i:s"
         }
     ],
-    "withs": [
-        
-    ],
+    "withs": [],
     "withs_count": [
+
+    ],
+    "joins_count": [
         {
-            "model": "users",
+            "table": "users",
             "foreign": "master_university_id",
             "key": "id",
+            "join": "inner",
+            "columns": [
+                {
+                    "field": "id"
+                }
+            ],
             "wheres": [
                 {
                     "field": "deleted_at",
                     "match": "is",
                     "value": "null"
                 }
+            ],
+            "orders": [
+                {
+                    "field": "id",
+                    "sort": "desc"
+                }
             ]
+        }
+    ],
+    "wheres": [],
+    "orders": [
+        {
+            "field": "id",
+            "sort": "desc"
         }
     ]
 }

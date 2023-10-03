@@ -1,42 +1,7 @@
 {
     "model": "university",
     "orders": [],
-    "withs": [
-        {
-            "model": "users",
-            "foreign": "master_university_id",
-            "key": "id",
-            "columns": [
-                {
-                    "field": "id"
-                },
-                {
-                    "field": "name"
-                }
-            ],
-            "orders": [
-                {
-                    "field": "id",
-                    "sort": "desc"
-                }
-            ],
-            "has": "hasMany",
-            "wheres": [
-                {
-                    "field": "id",
-                    "match": "<>",
-                    "value": "1"
-                },
-                {
-                    "field": "deleted_at",
-                    "match": "is",
-                    "value": "null"
-                }
-            ]
-        }
-    ],
-    "withs_count": [
-
-    ],
+    "withs": [],
+    "withs_count": [],
     "limit": 10
 }
