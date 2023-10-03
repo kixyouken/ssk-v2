@@ -48,14 +48,12 @@ func (s *sModelServices) GetModelFileQueryBefore(c *gin.Context, model models.Mo
 		columns = append(columns, modelJoinsColumns...)
 	}
 
-	if model.JoinsCount != nil && len(model.JoinsCount) > 0 {
-		modelJoinsCountColumns := s.GetModelJoinsCountColumns(c, model)
-		columns = append(columns, modelJoinsCountColumns...)
-	}
-
 	joins := []string{}
 	orders := ""
 	if model.JoinsCount != nil && len(model.JoinsCount) > 0 {
+		modelJoinsCountColumns := s.GetModelJoinsCountColumns(c, model)
+		columns = append(columns, modelJoinsCountColumns...)
+
 		modelJoinsCount := s.GetModelJoinsCount(c, model)
 		joins = append(joins, modelJoinsCount...)
 
@@ -241,7 +239,7 @@ func (s *sModelServices) GetModelJoinsCount(c *gin.Context, model models.ModelJs
 //	@param c
 //	@param model
 //	@return []string
-func (s *sModelServices) GetModelJoinsCountGroup(c *gin.Context, model models.ModelJson) []string {
+func (s *sModelServices) GetModelJoinsCountGroups(c *gin.Context, model models.ModelJson) []string {
 	groups := []string{}
 	for _, value := range model.JoinsCount {
 		groups = append(groups, model.Table+"."+value.Key)

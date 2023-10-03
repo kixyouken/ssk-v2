@@ -11,6 +11,66 @@
             "field": "updated_by"
         }
     ],
+    "joins": [
+        {
+            "model": "job",
+            "foreign": "id",
+            "key": "master_job_id",
+            "join": "left",
+            "columns": [
+                {
+                    "field": "name"
+                }
+            ]
+        },
+        {
+            "model": "university",
+            "foreign": "id",
+            "key": "master_university_id",
+            "join": "left",
+            "columns": [
+                {
+                    "field": "name"
+                }
+            ],
+            "wheres": [
+                {
+                    "field": "id",
+                    "match": "=",
+                    "value": "2"
+                }
+            ]
+        }
+    ],
+    "joins_count": [
+        {
+            "model": "event_users",
+            "foreign": "user_id",
+            "key": "id",
+            "join": "inner",
+            "columns": [
+                {
+                    "field": "event_id"
+                },
+                {
+                    "field": "event_meeting_schedule_id"
+                }
+            ],
+            "wheres": [
+                {
+                    "field": "created_at",
+                    "match": "between",
+                    "value": "2023-01-01~2023-10-01"
+                }
+            ],
+            "orders": [
+                {
+                    "field": "event_id",
+                    "sort": "desc"
+                }
+            ]
+        }
+    ],
     "withs": [
         {
             "model": "job",
@@ -54,37 +114,6 @@
                     "field": "deleted_at",
                     "match": "is",
                     "value": "null"
-                }
-            ]
-        }
-    ],
-    "joins": [
-        {
-            "model": "job",
-            "foreign": "id",
-            "key": "master_job_id",
-            "join": "left",
-            "columns": [
-                {
-                    "field": "name"
-                }
-            ]
-        },
-        {
-            "model": "university",
-            "foreign": "id",
-            "key": "master_university_id",
-            "join": "left",
-            "columns": [
-                {
-                    "field": "name"
-                }
-            ],
-            "wheres": [
-                {
-                    "field": "id",
-                    "match": "=",
-                    "value": "2"
                 }
             ]
         }

@@ -5,27 +5,7 @@
         
     ],
     "joins_count": [
-        {
-            "table": "event_users",
-            "foreign": "user_id",
-            "key": "id",
-            "join": "inner",
-            "columns": [
-                {
-                    "field": "event_id"
-                },
-                {
-                    "field": "event_meeting_schedule_id"
-                }
-            ],
-            "wheres": [
-                {
-                    "field": "created_at",
-                    "match": "between",
-                    "value": "2023-01-01~2023-10-01"
-                }
-            ]
-        }
+        
     ],
     "withs": [],
     "withs_count": [],
@@ -45,6 +25,10 @@
         },
         {
             "field": "master_job_id"
+        },
+        {
+            "field": "created_at",
+            "format": "Y-m-d H:i:s"
         }
     ],
     "wheres": [

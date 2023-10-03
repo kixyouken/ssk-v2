@@ -32,7 +32,7 @@ func Page(c *gin.Context) {
 	columns := services.ModelServices.GetModelColumns(c, *modelJson)
 	orders := services.ModelServices.GetModelOrders(c, *modelJson)
 	joins := services.ModelServices.GetModelJoins(c, *modelJson)
-	groups := services.ModelServices.GetModelJoinsCountGroup(c, *modelJson)
+	groups := services.ModelServices.GetModelJoinsCountGroups(c, *modelJson)
 
 	modelBeforeColumns, modelBeforeJoins, modelBeforeOrders := services.ModelServices.GetModelFileQueryBefore(c, *modelJson)
 	columns = append(columns, modelBeforeColumns...)
@@ -41,11 +41,13 @@ func Page(c *gin.Context) {
 		orders = strings.TrimRight(modelBeforeOrders+","+orders, ",")
 	}
 
-	tableBeforeColumns, tableBeforeJoins, tableBeforeOrders := services.TableServices.GetTableFileQueryBefore(c, *tableJson)
+	tableBeforeColumns, tableBeforeJoins, tableBeforeGroups, tableBeforeOrders := services.TableServices.GetTableFileQueryBefore(c, *tableJson)
 	columns = append(columns, tableBeforeColumns...)
 	joins = append(joins, tableBeforeJoins...)
+	groups = append(groups, tableBeforeGroups...)
 	if tableBeforeOrders != "" {
 		orders += "," + tableBeforeOrders
+		orders = strings.Trim(orders, ",")
 	}
 
 	result := []map[string]interface{}{}
