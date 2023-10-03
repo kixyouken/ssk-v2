@@ -33,6 +33,86 @@ func (s *sModelServices) GetModelFile(c *gin.Context, model string) *models.Mode
 	return &modelJson
 }
 
+// GetModelFileQueryBefore 获取 model.json 文件查询前信息处理
+//
+//	@receiver s
+//	@param c
+//	@param model
+//	@return []string
+//	@return []string
+//	@return string
+func (s *sModelServices) GetModelFileQueryBefore(c *gin.Context, model models.ModelJson) ([]string, []string, string) {
+	columns := []string{}
+	if model.Joins != nil && len(model.Joins) > 0 {
+		modelJoinsColumns := s.GetModelJoinsColumns(c, model)
+		columns = append(columns, modelJoinsColumns...)
+	}
+
+	if model.JoinsCount != nil && len(model.JoinsCount) > 0 {
+		modelJoinsCountColumns := s.GetModelJoinsCountColumns(c, model)
+		columns = append(columns, modelJoinsCountColumns...)
+	}
+
+	joins := []string{}
+	orders := ""
+	if model.JoinsCount != nil && len(model.JoinsCount) > 0 {
+		modelJoinsCount := s.GetModelJoinsCount(c, model)
+		joins = append(joins, modelJoinsCount...)
+
+		orders = s.GetModelJoinsCountOrders(c, model)
+	}
+
+	return columns, joins, orders
+}
+
+// GetModelFileQueryAfter 获取 model.json 文件查询后信息处理
+//
+//	@receiver s
+//	@param c
+//	@param result
+//	@param model
+func (s *sModelServices) GetModelFileQueryAfter(c *gin.Context, result map[string]interface{}, model models.ModelJson) {
+	if model.Withs != nil && len(model.Withs) > 0 {
+		ResultServices.HandleModelWiths(c, result, model)
+	}
+
+	if model.WithsCount != nil && len(model.WithsCount) > 0 {
+		ResultServices.HandleModelWithsCount(c, result, model)
+	}
+
+	if model.WithsSum != nil && len(model.WithsSum) > 0 {
+		ResultServices.HandleModelWithsSum(c, result, model)
+	}
+
+	if model.Columns != nil && len(model.Columns) > 0 {
+		ResultServices.HandleModelFieldFormat(c, result, model)
+	}
+}
+
+// GetModelFileQueryAfterList 获取 model.json 文件查询后信息处理
+//
+//	@receiver s
+//	@param c
+//	@param result
+//	@param model
+func (s *sModelServices) GetModelFileQueryAfterList(c *gin.Context, result []map[string]interface{}, model models.ModelJson) {
+	if model.Withs != nil && len(model.Withs) > 0 {
+		ResultServices.HandleModelWithsList(c, result, model)
+	}
+
+	if model.WithsCount != nil && len(model.WithsCount) > 0 {
+		ResultServices.HandleModelWithsCountList(c, result, model)
+	}
+
+	if model.WithsSum != nil && len(model.WithsSum) > 0 {
+		ResultServices.HandleModelWithsSumList(c, result, model)
+	}
+
+	if model.Columns != nil && len(model.Columns) > 0 {
+		ResultServices.HandleModelFieldFormatList(c, result, model)
+	}
+}
+
 // GetModelColumns 获取 model.json 文件 columns 信息
 //
 //	@receiver s

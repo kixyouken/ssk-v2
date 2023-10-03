@@ -33,6 +33,53 @@ func (s *sTableServices) GetTableFile(c *gin.Context, table string) *tables.Tabl
 	return &tableJson
 }
 
+// GetTableFileQueryBefore 获取 table.json 文件查询前信息处理
+//
+//	@receiver s
+//	@param c
+//	@param table
+//	@return []string
+//	@return []string
+//	@return string
+func (s *sTableServices) GetTableFileQueryBefore(c *gin.Context, table tables.TableJson) ([]string, []string, string) {
+	columns := []string{}
+	joins := []string{}
+	if table.Joins != nil && len(table.Joins) > 0 {
+		tableJoinsColumns := s.GetTableJoinsColumns(c, table)
+		columns = append(columns, tableJoinsColumns...)
+
+		tableJoins := s.GetTableJoins(c, table)
+		joins = append(joins, tableJoins...)
+	}
+
+	orders := ""
+	if table.Orders != nil && len(table.Orders) > 0 {
+		orders = s.GetTableOrders(c, table)
+	}
+
+	return columns, joins, orders
+}
+
+// GetTableFileQueryAfterList 获取 table.json 文件查询后信息处理
+//
+//	@receiver s
+//	@param c
+//	@param result
+//	@param table
+func (s *sTableServices) GetTableFileQueryAfterList(c *gin.Context, result []map[string]interface{}, table tables.TableJson) {
+	if table.Withs != nil && len(table.Withs) > 0 {
+		ResultServices.HandleTableWithsList(c, result, table)
+	}
+
+	if table.WithsCount != nil && len(table.WithsCount) > 0 {
+		ResultServices.HandleTableWithsCountList(c, result, table)
+	}
+
+	if table.WithsSum != nil && len(table.WithsSum) > 0 {
+		ResultServices.HandleTableWithsSumList(c, result, table)
+	}
+}
+
 // GetTableOrders 获取 table.json 文件 orders 信息
 //
 //	@receiver s

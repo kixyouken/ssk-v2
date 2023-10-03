@@ -3,6 +3,7 @@ package controllers
 import (
 	"ssk-v2/services"
 	"strconv"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -33,35 +34,18 @@ func Page(c *gin.Context) {
 	joins := services.ModelServices.GetModelJoins(c, *modelJson)
 	groups := services.ModelServices.GetModelJoinsCountGroup(c, *modelJson)
 
-	if modelJson.Joins != nil && len(modelJson.Joins) > 0 {
-		modelJoinsColumns := services.ModelServices.GetModelJoinsColumns(c, *modelJson)
-		columns = append(columns, modelJoinsColumns...)
+	modelBeforeColumns, modelBeforeJoins, modelBeforeOrders := services.ModelServices.GetModelFileQueryBefore(c, *modelJson)
+	columns = append(columns, modelBeforeColumns...)
+	joins = append(joins, modelBeforeJoins...)
+	if modelBeforeOrders != "" {
+		orders = strings.TrimRight(modelBeforeOrders+","+orders, ",")
 	}
 
-	if modelJson.JoinsCount != nil && len(modelJson.JoinsCount) > 0 {
-		modelJoinsCountColumns := services.ModelServices.GetModelJoinsCountColumns(c, *modelJson)
-		columns = append(columns, modelJoinsCountColumns...)
-	}
-
-	if tableJson.Joins != nil && len(tableJson.Joins) > 0 {
-		tableJoins := services.TableServices.GetTableJoins(c, *tableJson)
-		joins = append(joins, tableJoins...)
-
-		tableJoinsColumns := services.TableServices.GetTableJoinsColumns(c, *tableJson)
-		columns = append(columns, tableJoinsColumns...)
-	}
-
-	if modelJson.JoinsCount != nil && len(modelJson.JoinsCount) > 0 {
-		modelJoinsCount := services.ModelServices.GetModelJoinsCount(c, *modelJson)
-		joins = append(joins, modelJoinsCount...)
-		modelJoinsCountOrders := services.ModelServices.GetModelJoinsCountOrders(c, *modelJson)
-		if modelJoinsCountOrders != "" {
-			orders = modelJoinsCountOrders + ", " + orders
-		}
-	}
-
-	if tableJson.Orders != nil && len(tableJson.Orders) > 0 {
-		orders += ", " + services.TableServices.GetTableOrders(c, *tableJson)
+	tableBeforeColumns, tableBeforeJoins, tableBeforeOrders := services.TableServices.GetTableFileQueryBefore(c, *tableJson)
+	columns = append(columns, tableBeforeColumns...)
+	joins = append(joins, tableBeforeJoins...)
+	if tableBeforeOrders != "" {
+		orders += "," + tableBeforeOrders
 	}
 
 	result := []map[string]interface{}{}
@@ -70,33 +54,8 @@ func Page(c *gin.Context) {
 		services.DbService.Page(c, modelJson.Table, &result, columns, orders, joins, groups)
 	}
 
-	if modelJson.Withs != nil && len(modelJson.Withs) > 0 {
-		services.ResultServices.HandleModelWithsList(c, result, *modelJson)
-	}
-
-	if tableJson.Withs != nil && len(tableJson.Withs) > 0 {
-		services.ResultServices.HandleTableWithsList(c, result, *tableJson)
-	}
-
-	if modelJson.WithsCount != nil && len(modelJson.WithsCount) > 0 {
-		services.ResultServices.HandleModelWithsCountList(c, result, *modelJson)
-	}
-
-	if modelJson.WithsSum != nil && len(modelJson.WithsSum) > 0 {
-		services.ResultServices.HandleModelWithsSumList(c, result, *modelJson)
-	}
-
-	if tableJson.WithsCount != nil && len(tableJson.WithsCount) > 0 {
-		services.ResultServices.HandleTableWithsCountList(c, result, *tableJson)
-	}
-
-	if tableJson.WithsSum != nil && len(tableJson.WithsSum) > 0 {
-		services.ResultServices.HandleTableWithsSumList(c, result, *tableJson)
-	}
-
-	if modelJson.Columns != nil && len(modelJson.Columns) > 0 {
-		services.ResultServices.HandleModelFieldFormatList(c, result, *modelJson)
-	}
+	services.TableServices.GetTableFileQueryAfterList(c, result, *tableJson)
+	services.ModelServices.GetModelFileQueryAfterList(c, result, *modelJson)
 
 	c.JSON(200, gin.H{
 		"message": "Get",
@@ -120,33 +79,8 @@ func Read(c *gin.Context) {
 	result := map[string]interface{}{}
 	services.DbService.Read(c, modelJson.Table, idInt, &result, columns)
 
-	if modelJson.Withs != nil && len(modelJson.Withs) > 0 {
-		services.ResultServices.HandleModelWiths(c, result, *modelJson)
-	}
-
-	if modelJson.WithsCount != nil && len(modelJson.WithsCount) > 0 {
-		services.ResultServices.HandleModelWithsCount(c, result, *modelJson)
-	}
-
-	if modelJson.WithsSum != nil && len(modelJson.WithsSum) > 0 {
-		services.ResultServices.HandleModelWithsSum(c, result, *modelJson)
-	}
-
-	if formJson.Withs != nil && len(formJson.Withs) > 0 {
-		services.ResultServices.HandleFormWiths(c, result, *formJson)
-	}
-
-	if formJson.WithsCount != nil && len(formJson.WithsCount) > 0 {
-		services.ResultServices.HandleFormWithsCount(c, result, *formJson)
-	}
-
-	if formJson.WithsSum != nil && len(formJson.WithsSum) > 0 {
-		services.ResultServices.HandleFormWithsSum(c, result, *formJson)
-	}
-
-	if modelJson.Columns != nil && len(modelJson.Columns) > 0 {
-		services.ResultServices.HandleModelFieldFormat(c, result, *modelJson)
-	}
+	services.FormServices.GetFormFileQueryAfter(c, result, *formJson)
+	services.ModelServices.GetModelFileQueryAfter(c, result, *modelJson)
 
 	c.JSON(200, gin.H{
 		"message": "Read",

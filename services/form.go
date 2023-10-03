@@ -33,6 +33,26 @@ func (s *sFormServices) GetForm(c *gin.Context, form string) *forms.FormJson {
 	return &formJson
 }
 
+// GetFormFileQueryAfter 获取 form.json 文件查询后信息处理
+//
+//	@receiver s
+//	@param c
+//	@param result
+//	@param form
+func (s *sFormServices) GetFormFileQueryAfter(c *gin.Context, result map[string]interface{}, form forms.FormJson) {
+	if form.Withs != nil && len(form.Withs) > 0 {
+		ResultServices.HandleFormWiths(c, result, form)
+	}
+
+	if form.WithsCount != nil && len(form.WithsCount) > 0 {
+		ResultServices.HandleFormWithsCount(c, result, form)
+	}
+
+	if form.WithsSum != nil && len(form.WithsSum) > 0 {
+		ResultServices.HandleFormWithsSum(c, result, form)
+	}
+}
+
 // GetFormWithsColumns 获取 form.json 文件 withs 下 columns 信息
 //
 //	@receiver s
