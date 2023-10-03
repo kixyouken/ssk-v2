@@ -31,6 +31,7 @@ func Page(c *gin.Context) {
 	columns := services.ModelServices.GetModelColumns(c, *modelJson)
 	orders := services.ModelServices.GetModelOrders(c, *modelJson)
 	joins := services.ModelServices.GetModelJoins(c, *modelJson)
+	groups := services.ModelServices.GetModelJoinsCountGroup(c, *modelJson)
 
 	if modelJson.Joins != nil && len(modelJson.Joins) > 0 {
 		modelJoinsColumns := services.ModelServices.GetModelJoinsColumns(c, *modelJson)
@@ -51,6 +52,8 @@ func Page(c *gin.Context) {
 	}
 
 	if modelJson.JoinsCount != nil && len(modelJson.JoinsCount) > 0 {
+		modelJoinsCount := services.ModelServices.GetModelJoinsCount(c, *modelJson)
+		joins = append(joins, modelJoinsCount...)
 		modelJoinsCountOrders := services.ModelServices.GetModelJoinsCountOrders(c, *modelJson)
 		if modelJoinsCountOrders != "" {
 			orders = modelJoinsCountOrders + ", " + orders
@@ -64,7 +67,7 @@ func Page(c *gin.Context) {
 	result := []map[string]interface{}{}
 	count := services.DbService.Count(c, modelJson.Table, joins)
 	if count > 0 {
-		services.DbService.Page(c, modelJson.Table, &result, columns, orders, joins)
+		services.DbService.Page(c, modelJson.Table, &result, columns, orders, joins, groups)
 	}
 
 	if modelJson.Withs != nil && len(modelJson.Withs) > 0 {

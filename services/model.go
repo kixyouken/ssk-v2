@@ -92,11 +92,82 @@ func (s *sModelServices) GetModelJoinsCountColumns(c *gin.Context, model models.
 	columns := []string{}
 	for _, value := range model.JoinsCount {
 		for _, v := range value.Columns {
-			columns = append(columns, "COUNT( "+model.Table+"."+v.Field+" ) AS "+value.Table+"_"+v.Field+"_count")
+			columns = append(columns, "COUNT( "+value.Table+"."+v.Field+" ) AS "+value.Table+"_"+v.Field+"_count")
 		}
 	}
 
 	return columns
+}
+
+// HandleModelJoinsCountWheres 处理 model.json 文件 joinCount 下 wheres 信息
+//
+//	@receiver s
+//	@param c
+//	@param wheres
+//	@param table
+//	@return []string
+func (s *sModelServices) HandleModelJoinsCountWheres(c *gin.Context, wheres []models.Wheres, table string) []string {
+	whereSlice := []string{}
+	for _, v := range wheres {
+		switch strings.ToUpper(v.Match) {
+		case "=", "!=", "<>", ">", "<", ">=", "<=":
+			whereSlice = append(whereSlice, table+"."+v.Field+" "+v.Match+" '"+v.Value+"'")
+		case "IN":
+			whereSlice = append(whereSlice, table+"."+v.Field+" IN ("+v.Value+")")
+		case "LIKE":
+			whereSlice = append(whereSlice, table+"."+v.Field+" LIKE '%"+v.Value+"%'")
+		case "LIKE.LEFT":
+			whereSlice = append(whereSlice, table+"."+v.Field+" LIKE '%"+v.Value)
+		case "LIKE.RIGHT":
+			whereSlice = append(whereSlice, table+"."+v.Field+" LIKE '"+v.Value+"%'")
+		case "BETWEEN":
+			values := strings.Split(v.Value, "~")
+			whereSlice = append(whereSlice, table+"."+v.Field+" BETWEEN '"+values[0]+"' AND '"+values[1]+"'")
+		case "IS":
+			switch strings.ToUpper(v.Value) {
+			case "NULL":
+				whereSlice = append(whereSlice, table+"."+v.Field+" IS NULL")
+			case "NOTNULL":
+				whereSlice = append(whereSlice, table+"."+v.Field+" IS NOT NULL")
+			}
+		}
+	}
+	return whereSlice
+}
+
+// GetModelJoinsCount 获取 model.json 文件下 joinCount 信息
+//
+//	@receiver s
+//	@param c
+//	@param model
+//	@return []string
+func (s *sModelServices) GetModelJoinsCount(c *gin.Context, model models.ModelJson) []string {
+	joins := []string{}
+	for _, value := range model.JoinsCount {
+		joinCountTable := strings.ToUpper(value.Join) + " JOIN " + value.Table + " ON " + value.Table + "." + value.Foreign + " = " + model.Table + "." + value.Key
+		joinCountWhere := s.HandleModelJoinsCountWheres(c, value.Wheres, value.Table)
+		if joinCountWhere != nil {
+			joinCountTable += " AND ( " + strings.Join(joinCountWhere, " AND ") + " )"
+		}
+		joins = append(joins, joinCountTable)
+	}
+
+	return joins
+}
+
+// GetModelJoinsCountGroup 获取 model.json 文件下 joinCount 信息
+//
+//	@receiver s
+//	@param c
+//	@param model
+//	@return []string
+func (s *sModelServices) GetModelJoinsCountGroup(c *gin.Context, model models.ModelJson) []string {
+	groups := []string{}
+	for _, value := range model.JoinsCount {
+		groups = append(groups, model.Table+"."+value.Key)
+	}
+
+	return groups
 }
 
 // GetModelJoins 获取 model.json 文件 joins 信息
