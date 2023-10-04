@@ -5,6 +5,7 @@ import (
 	"os"
 	"ssk-v2/jsons/forms"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -19,7 +20,7 @@ var FormServices = sFormServices{}
 //	@param c
 //	@param form
 //	@return *forms.FormJson
-func (s *sFormServices) GetForm(c *gin.Context, form string) *forms.FormJson {
+func (s *sFormServices) GetFormFile(c *gin.Context, form string) *forms.FormJson {
 	formFile := "./json/form/" + form + ".json"
 	body, err := os.ReadFile(formFile)
 	if err != nil {
@@ -42,6 +43,25 @@ func (s *sFormServices) GetForm(c *gin.Context, form string) *forms.FormJson {
 func (s *sFormServices) GetFormFileQueryAfter(c *gin.Context, result map[string]interface{}, form forms.FormJson) {
 	if form.Withs != nil && len(form.Withs) > 0 {
 		ResultServices.HandleFormWiths(c, result, form)
+
+		for _, value := range form.Withs {
+			modelJson := ModelServices.GetModelFile(c, value.Model)
+			for _, val := range value.Columns {
+				if val.Format != "" {
+					val.Format = strings.ReplaceAll(val.Format, "Y", "2006")
+					val.Format = strings.ReplaceAll(val.Format, "m", "01")
+					val.Format = strings.ReplaceAll(val.Format, "d", "02")
+					val.Format = strings.ReplaceAll(val.Format, "H", "15")
+					val.Format = strings.ReplaceAll(val.Format, "i", "04")
+					val.Format = strings.ReplaceAll(val.Format, "s", "05")
+
+					for _, v := range result["withs_"+modelJson.Table].([]map[string]interface{}) {
+						date, _ := v[val.Field].(time.Time)
+						v[val.Field] = date.Format(val.Format)
+					}
+				}
+			}
+		}
 	}
 
 	if form.WithsCount != nil && len(form.WithsCount) > 0 {

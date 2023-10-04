@@ -5,6 +5,7 @@ import (
 	"os"
 	"ssk-v2/jsons/tables"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -87,6 +88,27 @@ func (s *sTableServices) GetTableFileQueryBefore(c *gin.Context, table tables.Ta
 func (s *sTableServices) GetTableFileQueryAfterList(c *gin.Context, result []map[string]interface{}, table tables.TableJson) {
 	if table.Withs != nil && len(table.Withs) > 0 {
 		ResultServices.HandleTableWithsList(c, result, table)
+
+		for _, value := range table.Withs {
+			modelJson := ModelServices.GetModelFile(c, value.Model)
+			for _, val := range value.Columns {
+				if val.Format != "" {
+					val.Format = strings.ReplaceAll(val.Format, "Y", "2006")
+					val.Format = strings.ReplaceAll(val.Format, "m", "01")
+					val.Format = strings.ReplaceAll(val.Format, "d", "02")
+					val.Format = strings.ReplaceAll(val.Format, "H", "15")
+					val.Format = strings.ReplaceAll(val.Format, "i", "04")
+					val.Format = strings.ReplaceAll(val.Format, "s", "05")
+
+					for _, v := range result {
+						for _, v := range v["withs_"+modelJson.Table].([]map[string]interface{}) {
+							date, _ := v[val.Field].(time.Time)
+							v[val.Field] = date.Format(val.Format)
+						}
+					}
+				}
+			}
+		}
 	}
 
 	if table.WithsCount != nil && len(table.WithsCount) > 0 {

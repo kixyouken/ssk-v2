@@ -1,6 +1,13 @@
 {
     "name": "用户表格",
     "model": "users",
+    "wheres": [
+        {
+            "field": "deleted_at",
+            "match": "is",
+            "value": "null"
+        }
+    ],
     "withs": [
         {
             "model": "university",

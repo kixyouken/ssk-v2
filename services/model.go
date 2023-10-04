@@ -5,6 +5,7 @@ import (
 	"os"
 	"ssk-v2/jsons/models"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -96,6 +97,26 @@ func (s *sModelServices) GetModelFileQueryAfter(c *gin.Context, result map[strin
 func (s *sModelServices) GetModelFileQueryAfterList(c *gin.Context, result []map[string]interface{}, model models.ModelJson) {
 	if model.Withs != nil && len(model.Withs) > 0 {
 		ResultServices.HandleModelWithsList(c, result, model)
+
+		for _, value := range model.Withs {
+			for _, val := range value.Columns {
+				if val.Format != "" {
+					val.Format = strings.ReplaceAll(val.Format, "Y", "2006")
+					val.Format = strings.ReplaceAll(val.Format, "m", "01")
+					val.Format = strings.ReplaceAll(val.Format, "d", "02")
+					val.Format = strings.ReplaceAll(val.Format, "H", "15")
+					val.Format = strings.ReplaceAll(val.Format, "i", "04")
+					val.Format = strings.ReplaceAll(val.Format, "s", "05")
+
+					for _, v := range result {
+						for _, v := range v["withs_"+value.Table].([]map[string]interface{}) {
+							date, _ := v[val.Field].(time.Time)
+							v[val.Field] = date.Format(val.Format)
+						}
+					}
+				}
+			}
+		}
 	}
 
 	if model.WithsCount != nil && len(model.WithsCount) > 0 {

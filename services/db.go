@@ -49,7 +49,7 @@ func (s *sDbServices) Page(c *gin.Context, table string, out interface{}, column
 		Scopes(s.Order(order),
 			s.Paginate(c),
 			s.Joins(joins...),
-			s.Wheres(c),
+			s.TableWheres(c),
 			s.Search(c),
 			s.Group(group...)).
 		Find(out).Error
@@ -65,7 +65,7 @@ func (s *sDbServices) Page(c *gin.Context, table string, out interface{}, column
 func (s *sDbServices) Count(c *gin.Context, table string, joins []string) int64 {
 	var count int64
 	err := db.Table(table).
-		Scopes(s.Joins(joins...), s.Wheres(c), s.Search(c)).
+		Scopes(s.Joins(joins...), s.TableWheres(c), s.Search(c)).
 		Count(&count).Error
 
 	if err != nil {
@@ -158,6 +158,7 @@ func (s *sDbServices) WithsSum(c *gin.Context, table string, out interface{}, co
 //	@return error
 func (s *sDbServices) Read(c *gin.Context, table string, id int, out interface{}, column interface{}) error {
 	return db.Table(table).Where(table+".id = ?", id).
+		Scopes(s.FormWheres(c)).
 		Limit(1).
 		Select(column).
 		Find(out).Error
@@ -250,13 +251,89 @@ func (s *sDbServices) Group(group ...string) func(db *gorm.DB) *gorm.DB {
 	}
 }
 
-// Wheres 默认搜索条件处理
+// FormWheres form 默认搜索条件处理
 //
 //	@receiver s
 //	@param c
 //	@return db
 //	@return func(db *gorm.DB) *gorm.DB
-func (s *sDbServices) Wheres(c *gin.Context) func(db *gorm.DB) *gorm.DB {
+func (s *sDbServices) FormWheres(c *gin.Context) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		form := c.Param("form")
+		formJson := FormServices.GetFormFile(c, form)
+		modelJson := ModelServices.GetModelFile(c, formJson.Model)
+
+		if formJson.Wheres != nil && len(formJson.Wheres) > 0 {
+			for _, v := range formJson.Wheres {
+				if !strings.Contains(v.Field, ".") {
+					v.Field = modelJson.Table + "." + v.Field
+				}
+				switch strings.ToUpper(v.Match) {
+				case "=", "!=", "<>", ">", "<", ">=", "<=":
+					db.Where(v.Field+" "+v.Match+" ?", v.Value)
+				case "IN":
+					db.Where(v.Field+" IN ?", strings.Split(v.Value, ","))
+				case "LIKE":
+					db.Where(v.Field+" LIKE ?", "%"+v.Value+"%")
+				case "LIKE.LEFT":
+					db.Where(v.Field+" LIKE ?", "%"+v.Value)
+				case "LIKE.RIGHT":
+					db.Where(v.Field+" LIKE ?", v.Value+"%")
+				case "BETWEEN":
+					values := strings.Split(v.Value, "~")
+					db.Where(v.Field+" BETWEEN ? AND ?", values[0], values[1])
+				case "IS":
+					switch strings.ToUpper(v.Value) {
+					case "NULL":
+						db.Where(v.Field + " IS NULL")
+					case "NOTNULL":
+						db.Where(v.Field + " IS NOT NULL")
+					}
+				}
+			}
+		}
+
+		if modelJson.Wheres != nil && len(modelJson.Wheres) > 0 {
+			for _, v := range modelJson.Wheres {
+				if !strings.Contains(v.Field, ".") {
+					v.Field = modelJson.Table + "." + v.Field
+				}
+				switch strings.ToUpper(v.Match) {
+				case "=", "!=", "<>", ">", "<", ">=", "<=":
+					db.Where(v.Field+" "+v.Match+" ?", v.Value)
+				case "IN":
+					db.Where(v.Field+" IN ?", strings.Split(v.Value, ","))
+				case "LIKE":
+					db.Where(v.Field+" LIKE ?", "%"+v.Value+"%")
+				case "LIKE.LEFT":
+					db.Where(v.Field+" LIKE ?", "%"+v.Value)
+				case "LIKE.RIGHT":
+					db.Where(v.Field+" LIKE ?", v.Value+"%")
+				case "BETWEEN":
+					values := strings.Split(v.Value, "~")
+					db.Where(v.Field+" BETWEEN ? AND ?", values[0], values[1])
+				case "IS":
+					switch strings.ToUpper(v.Value) {
+					case "NULL":
+						db.Where(v.Field + " IS NULL")
+					case "NOTNULL":
+						db.Where(v.Field + " IS NOT NULL")
+					}
+				}
+			}
+		}
+
+		return db
+	}
+}
+
+// TableWheres table 默认搜索条件处理
+//
+//	@receiver s
+//	@param c
+//	@return db
+//	@return func(db *gorm.DB) *gorm.DB
+func (s *sDbServices) TableWheres(c *gin.Context) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
 		table := c.Param("table")
 		tableJson := TableServices.GetTableFile(c, table)

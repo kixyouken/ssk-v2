@@ -1,0 +1,47 @@
+{
+    "name": "provinces表form",
+    "model": "provinces",
+    "wheres": [
+        {
+            "field": "created_at",
+            "match": "is",
+            "value": "notnull"
+        }
+    ],
+    "withs": [
+        {
+            "model": "citys",
+            "foreign": "province_id",
+            "key": "province_id",
+            "columns": [
+                {
+                    "field": "id"
+                },
+                {
+                    "field": "province_id"
+                },
+                {
+                    "field": "city_id"
+                },
+                {
+                    "field": "city_name"
+                },
+                {
+                    "field": "created_at",
+                    "format": "Y-m-d"
+                }
+            ],
+            "has": "hasMany",
+            "wheres": [
+                {
+                    "field": "deleted_at",
+                    "match": "is",
+                    "value": "null"
+                }
+            ]
+        }
+    ],
+    "withs_count": [
+        
+    ]
+}

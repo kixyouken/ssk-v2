@@ -1,0 +1,78 @@
+{
+    "name": "provinces表table",
+    "model": "provinces",
+    "wheres": [
+        {
+            "field": "created_at",
+            "match": "is",
+            "value": "notnull"
+        }
+    ],
+    "orders": [
+        {
+            "field": "id",
+            "sort": "desc"
+        },
+        {
+            "field": "created_at",
+            "sort": "asc"
+        }
+    ],
+    "withs": [
+        {
+            "model": "citys",
+            "foreign": "province_id",
+            "key": "province_id",
+            "has": "hasMany",
+            "columns": [
+                {
+                    "field": "id"
+                },
+                {
+                    "field": "province_id"
+                },
+                {
+                    "field": "city_id"
+                },
+                {
+                    "field": "city_name"
+                },
+                {
+                    "field": "created_at",
+                    "format": "Y-m-d"
+                }
+            ],
+            "wheres": [
+                {
+                    "field": "deleted_at",
+                    "match": "is",
+                    "value": "null"
+                },
+                {
+                    "field": "created_at",
+                    "match": "is",
+                    "value": "notnull"
+                }
+            ]
+        }
+    ],
+    "withs_count": [
+        {
+            "model": "citys",
+            "foreign": "province_id",
+            "key": "province_id",
+            "wheres": [
+                {
+                    "field": "deleted_at",
+                    "match": "is",
+                    "value": "null"
+                },
+                {
+                    "field": "created_at",
+                    "match": "is",
+                    "value": "notnull"
+                }
+            ]
+        }
+    ]
+}

@@ -23,7 +23,7 @@ func GetTable(c *gin.Context) {
 //	@param c
 func GetForm(c *gin.Context) {
 	form := c.Param("form")
-	formJson := services.FormServices.GetForm(c, form)
+	formJson := services.FormServices.GetFormFile(c, form)
 	c.JSON(200, gin.H{
 		"message": "success",
 		"data":    formJson,

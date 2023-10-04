@@ -71,7 +71,7 @@ func Page(c *gin.Context) {
 //	@param c
 func Read(c *gin.Context) {
 	form := c.Param("form")
-	formJson := services.FormServices.GetForm(c, form)
+	formJson := services.FormServices.GetFormFile(c, form)
 	modelJson := services.ModelServices.GetModelFile(c, formJson.Model)
 	columns := services.ModelServices.GetModelColumns(c, *modelJson)
 

@@ -1,0 +1,36 @@
+{
+    "name": "provinces表model",
+    "table": "provinces",
+    "columns": [
+        {
+            "field": "id"
+        },
+        {
+            "field": "province_id"
+        },
+        {
+            "field": "province_name"
+        },
+        {
+            "field": "created_at",
+            "format": "Y-m-d H:i"
+        }
+    ],
+    "wheres": [
+        {
+            "field": "deleted_at",
+            "match": "is",
+            "value": "null"
+        }
+    ],
+    "orders": [
+        
+    ],
+    "joins": [],
+    "withs": [
+
+    ],
+    "withs_count": [
+        
+    ]
+}
