@@ -7,6 +7,7 @@ type TableJson struct {
 	Page       int          `json:"page"`
 	Limit      int          `json:"limit"`
 	Wheres     []Wheres     `json:"wheres"`
+	WheresOr   [][]WheresOr `json:"wheres_or"`
 	Withs      []Withs      `json:"withs"`
 	WithsCount []WithsCount `json:"withs_count"`
 	WithsSum   []WithsSum   `json:"withs_sum"`
@@ -20,6 +21,12 @@ type Orders struct {
 }
 
 type Wheres struct {
+	Field string `json:"field"`
+	Match string `json:"match"`
+	Value string `json:"value"`
+}
+
+type WheresOr struct {
 	Field string `json:"field"`
 	Match string `json:"match"`
 	Value string `json:"value"`

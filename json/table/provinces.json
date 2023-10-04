@@ -8,6 +8,27 @@
             "value": "notnull"
         }
     ],
+    "wheres_or": [
+        [
+            {
+                "field": "province_id",
+                "match": "in",
+                "value": "110000000000,120000000000"
+            },
+            {
+                "field": "province_name",
+                "match": "like",
+                "value": "江"
+            }
+        ],
+        [
+            {
+                "field": "province_name",
+                "match": "like",
+                "value": "西"
+            }
+        ]
+    ],
     "orders": [
         {
             "field": "id",
@@ -18,61 +39,6 @@
             "sort": "asc"
         }
     ],
-    "withs": [
-        {
-            "model": "citys",
-            "foreign": "province_id",
-            "key": "province_id",
-            "has": "hasMany",
-            "columns": [
-                {
-                    "field": "id"
-                },
-                {
-                    "field": "province_id"
-                },
-                {
-                    "field": "city_id"
-                },
-                {
-                    "field": "city_name"
-                },
-                {
-                    "field": "created_at",
-                    "format": "Y-m-d"
-                }
-            ],
-            "wheres": [
-                {
-                    "field": "deleted_at",
-                    "match": "is",
-                    "value": "null"
-                },
-                {
-                    "field": "created_at",
-                    "match": "is",
-                    "value": "notnull"
-                }
-            ]
-        }
-    ],
-    "withs_count": [
-        {
-            "model": "citys",
-            "foreign": "province_id",
-            "key": "province_id",
-            "wheres": [
-                {
-                    "field": "deleted_at",
-                    "match": "is",
-                    "value": "null"
-                },
-                {
-                    "field": "created_at",
-                    "match": "is",
-                    "value": "notnull"
-                }
-            ]
-        }
-    ]
+    "withs": [],
+    "withs_count": []
 }

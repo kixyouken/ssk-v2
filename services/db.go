@@ -369,6 +369,40 @@ func (s *sDbServices) TableWheres(c *gin.Context) func(db *gorm.DB) *gorm.DB {
 			}
 		}
 
+		if tableJson.WheresOr != nil && len(tableJson.WheresOr) > 0 {
+			for _, value := range tableJson.WheresOr {
+				wheresOr := []string{}
+				for _, v := range value {
+					if !strings.Contains(v.Field, ".") {
+						v.Field = modelJson.Table + "." + v.Field
+					}
+					switch strings.ToUpper(v.Match) {
+					case "=", "!=", "<>", ">", "<", ">=", "<=":
+						wheresOr = append(wheresOr, v.Field+" "+v.Match+" '"+v.Value+"'")
+					case "IN":
+						wheresOr = append(wheresOr, v.Field+" IN ("+v.Value+")")
+					case "LIKE":
+						wheresOr = append(wheresOr, v.Field+" LIKE '%"+v.Value+"%'")
+					case "LIKE.LEFT":
+						wheresOr = append(wheresOr, v.Field+" LIKE '%"+v.Value+"'")
+					case "LIKE.RIGHT":
+						wheresOr = append(wheresOr, v.Field+" LIKE '"+v.Value+"%'")
+					case "BETWEEN":
+						values := strings.Split(v.Value, "~")
+						wheresOr = append(wheresOr, v.Field+" BETWEEN '"+values[0]+"' AND '"+values[1]+"'")
+					case "IS":
+						switch strings.ToUpper(v.Value) {
+						case "NULL":
+							wheresOr = append(wheresOr, v.Field+" IS NULL")
+						case "NOTNULL":
+							wheresOr = append(wheresOr, v.Field+" IS NOT NULL")
+						}
+					}
+				}
+				db.Where(strings.Join(wheresOr, " OR "))
+			}
+		}
+
 		if modelJson.Wheres != nil && len(modelJson.Wheres) > 0 {
 			for _, v := range modelJson.Wheres {
 				if !strings.Contains(v.Field, ".") {
@@ -398,6 +432,41 @@ func (s *sDbServices) TableWheres(c *gin.Context) func(db *gorm.DB) *gorm.DB {
 				}
 			}
 		}
+
+		if modelJson.WheresOr != nil && len(modelJson.WheresOr) > 0 {
+			for _, value := range modelJson.WheresOr {
+				wheresOr := []string{}
+				for _, v := range value {
+					if !strings.Contains(v.Field, ".") {
+						v.Field = modelJson.Table + "." + v.Field
+					}
+					switch strings.ToUpper(v.Match) {
+					case "=", "!=", "<>", ">", "<", ">=", "<=":
+						wheresOr = append(wheresOr, v.Field+" "+v.Match+" '"+v.Value+"'")
+					case "IN":
+						wheresOr = append(wheresOr, v.Field+" IN ("+v.Value+")")
+					case "LIKE":
+						wheresOr = append(wheresOr, v.Field+" LIKE '%"+v.Value+"%'")
+					case "LIKE.LEFT":
+						wheresOr = append(wheresOr, v.Field+" LIKE '%"+v.Value+"'")
+					case "LIKE.RIGHT":
+						wheresOr = append(wheresOr, v.Field+" LIKE '"+v.Value+"%'")
+					case "BETWEEN":
+						values := strings.Split(v.Value, "~")
+						wheresOr = append(wheresOr, v.Field+" BETWEEN '"+values[0]+"' AND '"+values[1]+"'")
+					case "IS":
+						switch strings.ToUpper(v.Value) {
+						case "NULL":
+							wheresOr = append(wheresOr, v.Field+" IS NULL")
+						case "NOTNULL":
+							wheresOr = append(wheresOr, v.Field+" IS NOT NULL")
+						}
+					}
+				}
+				db.Where(strings.Join(wheresOr, " OR "))
+			}
+		}
+
 		return db
 	}
 }
