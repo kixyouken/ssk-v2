@@ -101,9 +101,15 @@ func (s *sTableServices) GetTableFileQueryAfterList(c *gin.Context, result []map
 					val.Format = strings.ReplaceAll(val.Format, "s", "05")
 
 					for _, v := range result {
-						for _, v := range v["withs_"+modelJson.Table].([]map[string]interface{}) {
-							date, _ := v[val.Field].(time.Time)
-							v[val.Field] = date.Format(val.Format)
+						if value.Has == "hasOne" {
+							date, _ := v["withs_"+modelJson.Table].(map[string]interface{})[val.Field].(time.Time)
+							v["withs_"+modelJson.Table].(map[string]interface{})[val.Field] = date.Format(val.Format)
+						} else if value.Has == "hasMany" {
+							for _, v := range v["withs_"+modelJson.Table].([]map[string]interface{}) {
+								date, _ := v[val.Field].(time.Time)
+								v[val.Field] = date.Format(val.Format)
+							}
+
 						}
 					}
 				}

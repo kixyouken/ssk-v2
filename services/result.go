@@ -162,6 +162,22 @@ func (s *sResultServices) HandleModelFieldFormat(c *gin.Context, result map[stri
 			result[v.Field] = date.Format(v.Format)
 		}
 	}
+
+	for _, value := range model.Joins {
+		for _, v := range value.Columns {
+			if v.Format != "" {
+				v.Format = strings.ReplaceAll(v.Format, "Y", "2006")
+				v.Format = strings.ReplaceAll(v.Format, "m", "01")
+				v.Format = strings.ReplaceAll(v.Format, "d", "02")
+				v.Format = strings.ReplaceAll(v.Format, "H", "15")
+				v.Format = strings.ReplaceAll(v.Format, "i", "04")
+				v.Format = strings.ReplaceAll(v.Format, "s", "05")
+
+				date, _ := result["joins_"+value.Table+"_"+v.Field].(time.Time)
+				result["joins_"+value.Table+"_"+v.Field] = date.Format(v.Format)
+			}
+		}
+	}
 }
 
 // HandleModelFieldFormat 处理 field 格式化
