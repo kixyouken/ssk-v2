@@ -5,6 +5,7 @@ type ModelJson struct {
 	Table      string       `json:"table"`
 	Joins      []Joins      `json:"joins"`
 	JoinsCount []JoinsCount `json:"joins_count"`
+	JoinsSum   []JoinsSum   `json:"joins_sum"`
 	Withs      []Withs      `json:"withs"`
 	WithsCount []WithsCount `json:"withs_count"`
 	WithsSum   []WithsSum   `json:"withs_sum"`
@@ -30,6 +31,16 @@ type Joins struct {
 }
 
 type JoinsCount struct {
+	Table   string    `json:"table"`
+	Foreign string    `json:"foreign"`
+	Key     string    `json:"key"`
+	Join    string    `json:"join"`
+	Wheres  []Wheres  `json:"wheres"`
+	Columns []Columns `json:"columns"`
+	Orders  []Orders  `json:"orders"`
+}
+
+type JoinsSum struct {
 	Table   string    `json:"table"`
 	Foreign string    `json:"foreign"`
 	Key     string    `json:"key"`

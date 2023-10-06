@@ -103,6 +103,26 @@
             ]
         }
     ],
+    "joins_sum": [
+        {
+            "table": "orders",
+            "foreign": "user_id",
+            "key": "id",
+            "join": "inner",
+            "columns": [
+                {
+                    "field": "money"
+                }
+            ],
+            "wheres": [],
+            "orders": [
+                {
+                    "field": "money",
+                    "sort": "desc"
+                }
+            ]
+        }
+    ],
     "withs": [
         {
             "table": "master_university",

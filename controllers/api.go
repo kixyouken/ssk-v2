@@ -32,7 +32,13 @@ func Page(c *gin.Context) {
 	columns := services.ModelServices.GetModelColumns(c, *modelJson)
 	orders := services.ModelServices.GetModelOrders(c, *modelJson)
 	joins := services.ModelServices.GetModelJoins(c, *modelJson)
-	groups := services.ModelServices.GetModelJoinsCountGroups(c, *modelJson)
+
+	groups := []string{}
+	modelJoinsCountGroups := services.ModelServices.GetModelJoinsCountGroups(c, *modelJson)
+	groups = append(groups, modelJoinsCountGroups...)
+
+	modelJoinsSumGroups := services.ModelServices.GetModelJoinsSumGroups(c, *modelJson)
+	groups = append(groups, modelJoinsSumGroups...)
 
 	modelBeforeColumns, modelBeforeJoins, modelBeforeOrders := services.ModelServices.GetModelFileQueryBefore(c, *modelJson)
 	columns = append(columns, modelBeforeColumns...)

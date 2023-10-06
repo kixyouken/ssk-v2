@@ -61,6 +61,20 @@ func (s *sModelServices) GetModelFileQueryBefore(c *gin.Context, model models.Mo
 		orders = s.GetModelJoinsCountOrders(c, model)
 	}
 
+	if model.JoinsSum != nil && len(model.JoinsSum) > 0 {
+		modelJoinsSumColumns := s.GetModelJoinsSumColumns(c, model)
+		columns = append(columns, modelJoinsSumColumns...)
+
+		modelJoinsSum := s.GetModelJoinsSum(c, model)
+		joins = append(joins, modelJoinsSum...)
+
+		if orders != "" {
+			orders = s.GetModelJoinsSumOrders(c, model) + "," + orders
+		} else {
+			orders += s.GetModelJoinsSumOrders(c, model)
+		}
+	}
+
 	return columns, joins, orders
 }
 
@@ -178,6 +192,24 @@ func (s *sModelServices) GetModelJoinsCountOrders(c *gin.Context, model models.M
 			orders = append(orders, value.Table+"_"+v.Field+"_count "+strings.ToUpper(v.Sort))
 		}
 	}
+
+	return strings.Join(orders, ",")
+}
+
+// GetModelJoinsSumOrders 获取 model.json 文件 joinSum 下 orders 信息
+//
+//	@receiver s
+//	@param c
+//	@param model
+//	@return string
+func (s *sModelServices) GetModelJoinsSumOrders(c *gin.Context, model models.ModelJson) string {
+	orders := []string{}
+	for _, value := range model.JoinsSum {
+		for _, v := range value.Orders {
+			orders = append(orders, value.Table+"_"+v.Field+"_sum "+strings.ToUpper(v.Sort))
+		}
+	}
+
 	return strings.Join(orders, ",")
 }
 
@@ -192,6 +224,23 @@ func (s *sModelServices) GetModelJoinsCountColumns(c *gin.Context, model models.
 	for _, value := range model.JoinsCount {
 		for _, v := range value.Columns {
 			columns = append(columns, "COUNT( "+value.Table+"."+v.Field+" ) AS "+value.Table+"_"+v.Field+"_count")
+		}
+	}
+
+	return columns
+}
+
+// GetModelJoinsSumColumns 获取 model.json 文件 joinSum 下 columns 信息
+//
+//	@receiver s
+//	@param c
+//	@param model
+//	@return []string
+func (s *sModelServices) GetModelJoinsSumColumns(c *gin.Context, model models.ModelJson) []string {
+	columns := []string{}
+	for _, value := range model.JoinsSum {
+		for _, v := range value.Columns {
+			columns = append(columns, "SUM( "+value.Table+"."+v.Field+" ) AS "+value.Table+"_"+v.Field+"_sum")
 		}
 	}
 
@@ -231,6 +280,43 @@ func (s *sModelServices) HandleModelJoinsCountWheres(c *gin.Context, wheres []mo
 			}
 		}
 	}
+
+	return whereSlice
+}
+
+// HandleModelJoinsSumWheres 处理 model.json 文件 joinSum 下 wheres 信息
+//
+//	@receiver s
+//	@param c
+//	@param wheres
+//	@param table
+//	@return []string
+func (s *sModelServices) HandleModelJoinsSumWheres(c *gin.Context, wheres []models.Wheres, table string) []string {
+	whereSlice := []string{}
+	for _, v := range wheres {
+		switch strings.ToUpper(v.Match) {
+		case "=", "!=", "<>", ">", "<", ">=", "<=":
+			whereSlice = append(whereSlice, table+"."+v.Field+" "+v.Match+" '"+v.Value+"'")
+		case "IN":
+			whereSlice = append(whereSlice, table+"."+v.Field+" IN ("+v.Value+")")
+		case "LIKE":
+			whereSlice = append(whereSlice, table+"."+v.Field+" LIKE '%"+v.Value+"%'")
+		case "LIKE.LEFT":
+			whereSlice = append(whereSlice, table+"."+v.Field+" LIKE '%"+v.Value)
+		case "LIKE.RIGHT":
+			whereSlice = append(whereSlice, table+"."+v.Field+" LIKE '"+v.Value+"%'")
+		case "BETWEEN":
+			values := strings.Split(v.Value, "~")
+			whereSlice = append(whereSlice, table+"."+v.Field+" BETWEEN '"+values[0]+"' AND '"+values[1]+"'")
+		case "IS":
+			switch strings.ToUpper(v.Value) {
+			case "NULL":
+				whereSlice = append(whereSlice, table+"."+v.Field+" IS NULL")
+			case "NOTNULL":
+				whereSlice = append(whereSlice, table+"."+v.Field+" IS NOT NULL")
+			}
+		}
+	}
 	return whereSlice
 }
 
@@ -245,10 +331,30 @@ func (s *sModelServices) GetModelJoinsCount(c *gin.Context, model models.ModelJs
 	for _, value := range model.JoinsCount {
 		joinCountTable := strings.ToUpper(value.Join) + " JOIN " + value.Table + " ON " + value.Table + "." + value.Foreign + " = " + model.Table + "." + value.Key
 		joinCountWhere := s.HandleModelJoinsCountWheres(c, value.Wheres, value.Table)
-		if joinCountWhere != nil {
+		if len(joinCountWhere) > 0 {
 			joinCountTable += " AND ( " + strings.Join(joinCountWhere, " AND ") + " )"
 		}
 		joins = append(joins, joinCountTable)
+	}
+
+	return joins
+}
+
+// GetModelJoinsSum 获取 model.json 文件下 joinSum 信息
+//
+//	@receiver s
+//	@param c
+//	@param model
+//	@return []string
+func (s *sModelServices) GetModelJoinsSum(c *gin.Context, model models.ModelJson) []string {
+	joins := []string{}
+	for _, value := range model.JoinsSum {
+		joinSumTable := strings.ToUpper(value.Join) + " JOIN " + value.Table + " ON " + value.Table + "." + value.Foreign + " = " + model.Table + "." + value.Key
+		joinSumWhere := s.HandleModelJoinsSumWheres(c, value.Wheres, value.Table)
+		if len(joinSumWhere) > 0 {
+			joinSumTable += " AND ( " + strings.Join(joinSumWhere, " AND ") + " )"
+		}
+		joins = append(joins, joinSumTable)
 	}
 
 	return joins
@@ -263,6 +369,21 @@ func (s *sModelServices) GetModelJoinsCount(c *gin.Context, model models.ModelJs
 func (s *sModelServices) GetModelJoinsCountGroups(c *gin.Context, model models.ModelJson) []string {
 	groups := []string{}
 	for _, value := range model.JoinsCount {
+		groups = append(groups, model.Table+"."+value.Key)
+	}
+
+	return groups
+}
+
+// GetModelJoinsSumGroups 获取 model.json 文件下 joinSum 信息
+//
+//	@receiver s
+//	@param c
+//	@param model
+//	@return []string
+func (s *sModelServices) GetModelJoinsSumGroups(c *gin.Context, model models.ModelJson) []string {
+	groups := []string{}
+	for _, value := range model.JoinsSum {
 		groups = append(groups, model.Table+"."+value.Key)
 	}
 

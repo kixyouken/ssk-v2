@@ -1,71 +1,28 @@
 {
     "name": "users表model",
     "table": "users",
-    "withs": [
+    "joins_sum": [
         {
-            "table": "provinces",
-            "foreign": "province_id",
-            "key": "province_id",
+            "table": "orders",
+            "foreign": "user_id",
+            "key": "id",
+            "join": "inner",
             "columns": [
                 {
-                    "field": "province_id"
-                },
-                {
-                    "field": "province_name"
+                    "field": "money"
                 }
             ],
-            "has": "hasOne",
-            "wheres": [
+            "wheres": [],
+            "orders": [
                 {
-                    "field": "deleted_at",
-                    "match": "is",
-                    "value": "null"
-                }
-            ]
-        },
-        {
-            "table": "citys",
-            "foreign": "city_id",
-            "key": "city_id",
-            "columns": [
-                {
-                    "field": "city_id"
-                },
-                {
-                    "field": "city_name"
-                }
-            ],
-            "has": "hasOne",
-            "wheres": [
-                {
-                    "field": "deleted_at",
-                    "match": "is",
-                    "value": "null"
-                }
-            ]
-        },
-        {
-            "table": "countys",
-            "foreign": "county_id",
-            "key": "county_id",
-            "columns": [
-                {
-                    "field": "county_id"
-                },
-                {
-                    "field": "county_name"
-                }
-            ],
-            "has": "hasOne",
-            "wheres": [
-                {
-                    "field": "deleted_at",
-                    "match": "is",
-                    "value": "null"
+                    "field": "money",
+                    "sort": "desc"
                 }
             ]
         }
     ],
+    "joins_count": [],
+    "withs": [],
     "deleteds": [
         {
             "field": "birthday",
