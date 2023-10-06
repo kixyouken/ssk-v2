@@ -1,26 +1,7 @@
 {
     "name": "users表model",
     "table": "users",
-    "joins_sum": [
-        {
-            "table": "orders",
-            "foreign": "user_id",
-            "key": "id",
-            "join": "inner",
-            "columns": [
-                {
-                    "field": "money"
-                }
-            ],
-            "wheres": [],
-            "orders": [
-                {
-                    "field": "money",
-                    "sort": "desc"
-                }
-            ]
-        }
-    ],
+    "joins_sum": [],
     "joins_count": [],
     "withs": [],
     "deleteds": [

@@ -412,6 +412,35 @@ func (s *sModelServices) GetModelJoins(c *gin.Context, model models.ModelJson) [
 	return joins
 }
 
+// GetModelGroups 获取 model.json 文件 groups 信息
+//
+//	@receiver s
+//	@param c
+//	@param model
+//	@return []string
+//	@return []string
+func (s *sModelServices) GetModelGroups(c *gin.Context, model models.ModelJson) ([]string, []string) {
+	columns := []string{}
+	groups := []string{}
+
+	for _, value := range model.Groups {
+		groupType := strings.ToUpper(value.Type)
+		if groupType == "COUNT" {
+			for _, v := range value.Columns {
+				columns = append(columns, model.Table+"."+value.Group.Field+", COUNT( "+model.Table+"."+v.Field+" ) AS "+v.Field+"_count")
+				groups = append(groups, value.Group.Field)
+			}
+		} else if groupType == "SUM" {
+			for _, v := range value.Columns {
+				columns = append(columns, model.Table+"."+value.Group.Field+", SUM( "+model.Table+"."+v.Field+" ) AS "+v.Field+"_sum")
+				groups = append(groups, value.Group.Field)
+			}
+		}
+	}
+
+	return columns, groups
+}
+
 // GetModelJoinsColumns 获取 model.json 文件 joins 下 columns 信息
 //
 //	@receiver s

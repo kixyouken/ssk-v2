@@ -14,6 +14,7 @@ type ModelJson struct {
 	WheresOr   [][]WheresOr `json:"wheres_or"`
 	Orders     []Orders     `json:"orders"`
 	Deleteds   []Deleteds   `json:"deleteds"`
+	Groups     []Groups     `json:"groups"`
 }
 
 type Columns struct {
@@ -95,4 +96,14 @@ type WheresOr struct {
 type Deleteds struct {
 	Field string `json:"field"`
 	Value string `json:"value"`
+}
+
+type Groups struct {
+	Columns []Columns `json:"columns"`
+	Type    string    `json:"type"`
+	Group   Group     `json:"group"`
+}
+
+type Group struct {
+	Field string `json:"field"`
 }

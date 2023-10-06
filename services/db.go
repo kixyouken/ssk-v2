@@ -65,7 +65,7 @@ func (s *sDbServices) Page(c *gin.Context, table string, out interface{}, column
 func (s *sDbServices) Count(c *gin.Context, table string, joins []string) int64 {
 	var count int64
 	err := db.Table(table).
-		Scopes(s.Joins(joins...), s.TableWheres(c), s.Search(c)).
+		Scopes(s.Joins(joins...), s.TableWheres(c), s.Search(c), s.GroupsWheres(c)).
 		Count(&count).Error
 
 	if err != nil {
@@ -493,6 +493,26 @@ func (s *sDbServices) TableWheres(c *gin.Context) func(db *gorm.DB) *gorm.DB {
 				}
 				db.Where(strings.Join(wheresOr, " OR "))
 			}
+		}
+
+		return db
+	}
+}
+
+// GroupsWheres model group条件处理
+//
+//	@receiver s
+//	@param c
+//	@return db
+//	@return func(db *gorm.DB) *gorm.DB
+func (s *sDbServices) GroupsWheres(c *gin.Context) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		table := c.Param("table")
+		tableJson := TableServices.GetTableFile(c, table)
+		modelJson := ModelServices.GetModelFile(c, tableJson.Model)
+
+		for _, value := range modelJson.Groups {
+			db.Select("COUNT( DISTINCT( " + value.Group.Field + " ) )")
 		}
 
 		return db

@@ -1,0 +1,17 @@
+{
+    "name": "logins表model",
+    "table": "logins",
+    "groups": [
+        {
+            "columns": [
+                {
+                    "field": "user_id"
+                }
+            ],
+            "type": "count",
+            "group": {
+                "field": "user_id"
+            }
+        }
+    ]
+}

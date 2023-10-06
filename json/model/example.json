@@ -302,5 +302,29 @@
             "field": "deleted_at",
             "value": "datetime"
         }
+    ],
+    "groups": [
+        {
+            "columns": [
+                {
+                    "field": "money"
+                }
+            ],
+            "type": "sum",
+            "group": {
+                "field": "user_id"
+            }
+        },
+        {
+            "columns": [
+                {
+                    "field": "user_id"
+                }
+            ],
+            "type": "count",
+            "group": {
+                "field": "user_id"
+            }
+        }
     ]
 }

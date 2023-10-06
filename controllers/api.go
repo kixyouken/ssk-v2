@@ -4,6 +4,7 @@ import (
 	"ssk-v2/services"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -56,8 +57,11 @@ func Page(c *gin.Context) {
 		orders = strings.Trim(orders, ",")
 	}
 
-	result := []map[string]interface{}{}
+	if modelJson.Groups != nil {
+		columns, groups = services.ModelServices.GetModelGroups(c, *modelJson)
+	}
 	count := services.DbService.Count(c, modelJson.Table, joins)
+	result := []map[string]interface{}{}
 	if count > 0 {
 		services.DbService.Page(c, modelJson.Table, &result, columns, orders, joins, groups)
 	}
@@ -128,14 +132,17 @@ func Delete(c *gin.Context) {
 
 func Test(c *gin.Context) {
 	result := []map[string]interface{}{}
-	services.DbService.Get(c, "users", &result, "*", "id ASC", []string{}, "")
-	for _, v := range result {
-		res := map[string]interface{}{}
-		// sql := "SELECT * FROM `citys` WHERE province_id = " + v["province_id"].(string) + " ORDER BY RAND() LIMIT 1"
-		sql := "SELECT * FROM `countys` WHERE city_id = " + v["city_id"].(string) + " ORDER BY RAND() LIMIT 1"
-		services.DbService.GetSql(c, &res, sql)
-		// services.DbService.Update(c, "users", int(v["id"].(uint32)), map[string]interface{}{"city_id": res["city_id"]})
-		services.DbService.Update(c, "users", int(v["id"].(uint32)), map[string]interface{}{"county_id": res["county_id"]})
+	services.DbService.Get(c, "logins", &result, "*", "", []string{}, "")
+
+	loginStr := "2023-01-01 00:00:00"
+	layout := "2006-01-02 15:04:05"
+	t, _ := time.Parse(layout, loginStr)
+	timestamp := t.Unix()
+	for k, v := range result {
+		loginTime := (k+1)*3600 + int(timestamp)
+		t = time.Unix(int64(loginTime), 0)
+		loginDate := t.Format(layout)
+		services.DbService.Update(c, "logins", int(v["id"].(uint32)), map[string]interface{}{"created_at": loginDate, "updated_at": loginDate})
 	}
 
 	c.JSON(200, gin.H{

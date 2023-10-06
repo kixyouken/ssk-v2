@@ -1,0 +1,28 @@
+{
+    "name": "orders表model",
+    "table": "orders",
+    "groups": [
+        {
+            "columns": [
+                {
+                    "field": "money"
+                }
+            ],
+            "type": "sum",
+            "group": {
+                "field": "user_id"
+            }
+        },
+        {
+            "columns": [
+                {
+                    "field": "user_id"
+                }
+            ],
+            "type": "count",
+            "group": {
+                "field": "user_id"
+            }
+        }
+    ]
+}
