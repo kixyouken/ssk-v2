@@ -349,6 +349,34 @@ func (s *sModelServices) GetModelWithsOrders(c *gin.Context, withs models.Withs)
 	return strings.Join(orders, ",")
 }
 
+// GetModelDeleteds 获取 model.json 文件 deleteds 信息
+//
+//	@receiver s
+//	@param c
+//	@param model
+//	@return []string
+//	@return map[string]interface{}
+func (s *sModelServices) GetModelDeleteds(c *gin.Context, model models.ModelJson) ([]string, map[string]interface{}) {
+	columns := []string{}
+	deleted := map[string]interface{}{}
+	t := time.Now()
+	for _, v := range model.Deleteds {
+		columns = append(columns, v.Field)
+		switch v.Value {
+		case "date":
+			deleted[v.Field] = t.Format("2006-01-02")
+		case "datetime":
+			deleted[v.Field] = t.Format("2006-01-02 15:04:05")
+		case "timestamp":
+			deleted[v.Field] = t.Unix()
+		default:
+			deleted[v.Field] = v.Value
+		}
+	}
+
+	return columns, deleted
+}
+
 // HandleModelJoinsWheres 处理 model.json 文件 joins 下 wheres 信息
 //
 //	@receiver s

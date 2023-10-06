@@ -130,7 +130,7 @@ func (s *sDbServices) WithsCount(c *gin.Context, table string, wheres interface{
 	return count
 }
 
-// WithsSum Sum统计
+// WithsSum WithsSum 统计
 //
 //	@receiver s
 //	@param c
@@ -168,12 +168,40 @@ func (s *sDbServices) Save(c *gin.Context) {
 
 }
 
-func (s *sDbServices) Update(c *gin.Context) {
-
+// Update 根据 id 更新
+//
+//	@receiver s
+//	@param c
+//	@param table
+//	@param id
+//	@param updates
+//	@return error
+func (s *sDbServices) Update(c *gin.Context, table string, id int, updates map[string]interface{}) error {
+	return db.Table(table).Where("id = ?", id).Updates(updates).Error
 }
 
-func (s *sDbServices) Delete(c *gin.Context) {
+// Delete 根据 id 删除
+//
+//	@receiver s
+//	@param c
+//	@param table
+//	@param id
+//	@param column
+//	@param deleted
+//	@return error
+func (s *sDbServices) Delete(c *gin.Context, table string, id int, column interface{}, deleted map[string]interface{}) error {
+	return db.Table(table).Select(column).Where("id = ?", id).Updates(deleted).Error
+}
 
+// GetSql 原生 sql 查询
+//
+//	@receiver s
+//	@param c
+//	@param out
+//	@param sql
+//	@return error
+func (s *sDbServices) GetSql(c *gin.Context, out interface{}, sql string) error {
+	return db.Raw(sql).Scan(out).Error
 }
 
 // Order 排序

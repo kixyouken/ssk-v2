@@ -32,7 +32,9 @@ func GetRouter() *gin.Engine {
 		// 修改
 		api.PUT("/form/:model/:id", controllers.Update)
 		// 删除
-		api.DELETE("/table/:model/:id", controllers.Delete)
+		api.DELETE("/table/:table/:id", controllers.Delete)
+
+		api.Any("/test/test", controllers.Test)
 	}
 
 	r.GET("/ping", func(c *gin.Context) {

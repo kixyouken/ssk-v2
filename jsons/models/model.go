@@ -12,6 +12,7 @@ type ModelJson struct {
 	Wheres     []Wheres     `json:"wheres"`
 	WheresOr   [][]WheresOr `json:"wheres_or"`
 	Orders     []Orders     `json:"orders"`
+	Deleteds   []Deleteds   `json:"deleteds"`
 }
 
 type Columns struct {
@@ -77,5 +78,10 @@ type Wheres struct {
 type WheresOr struct {
 	Field string `json:"field"`
 	Match string `json:"match"`
+	Value string `json:"value"`
+}
+
+type Deleteds struct {
+	Field string `json:"field"`
 	Value string `json:"value"`
 }

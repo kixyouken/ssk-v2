@@ -104,9 +104,36 @@ func Update(c *gin.Context) {
 	})
 }
 
+// Delete 删除
+//
+//	@param c
 func Delete(c *gin.Context) {
-
+	table := c.Param("table")
+	tableJson := services.TableServices.GetTableFile(c, table)
+	modelJson := services.ModelServices.GetModelFile(c, tableJson.Model)
+	columns, deleted := services.ModelServices.GetModelDeleteds(c, *modelJson)
+	idStr := c.Param("id")
+	idInt, _ := strconv.Atoi(idStr)
+	services.DbService.Delete(c, modelJson.Table, idInt, columns, deleted)
 	c.JSON(200, gin.H{
 		"message": "Delete",
+	})
+}
+
+func Test(c *gin.Context) {
+	result := []map[string]interface{}{}
+	services.DbService.Get(c, "users", &result, "*", "id ASC", []string{}, "")
+	for _, v := range result {
+		res := map[string]interface{}{}
+		// sql := "SELECT * FROM `citys` WHERE province_id = " + v["province_id"].(string) + " ORDER BY RAND() LIMIT 1"
+		sql := "SELECT * FROM `countys` WHERE city_id = " + v["city_id"].(string) + " ORDER BY RAND() LIMIT 1"
+		services.DbService.GetSql(c, &res, sql)
+		// services.DbService.Update(c, "users", int(v["id"].(uint32)), map[string]interface{}{"city_id": res["city_id"]})
+		services.DbService.Update(c, "users", int(v["id"].(uint32)), map[string]interface{}{"county_id": res["county_id"]})
+	}
+
+	c.JSON(200, gin.H{
+		"message": "Update",
+		"data":    result,
 	})
 }

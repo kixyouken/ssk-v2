@@ -1,41 +1,87 @@
 {
-    "name": "用户表",
+    "name": "users表model",
     "table": "users",
-    "joins": [
-        
-    ],
-    "joins_count": [
-        
-    ],
-    "withs": [],
-    "withs_count": [],
-    "withs_sum": [],
-    "columns": [
+    "withs": [
         {
-            "field": "id"
+            "table": "provinces",
+            "foreign": "province_id",
+            "key": "province_id",
+            "columns": [
+                {
+                    "field": "province_id"
+                },
+                {
+                    "field": "province_name"
+                }
+            ],
+            "has": "hasOne",
+            "wheres": [
+                {
+                    "field": "deleted_at",
+                    "match": "is",
+                    "value": "null"
+                }
+            ]
         },
         {
-            "field": "name"
+            "table": "citys",
+            "foreign": "city_id",
+            "key": "city_id",
+            "columns": [
+                {
+                    "field": "city_id"
+                },
+                {
+                    "field": "city_name"
+                }
+            ],
+            "has": "hasOne",
+            "wheres": [
+                {
+                    "field": "deleted_at",
+                    "match": "is",
+                    "value": "null"
+                }
+            ]
         },
         {
-            "field": "email"
-        },
-        {
-            "field": "master_university_id"
-        },
-        {
-            "field": "master_job_id"
-        },
-        {
-            "field": "created_at",
-            "format": "Y-m-d H:i:s"
+            "table": "countys",
+            "foreign": "county_id",
+            "key": "county_id",
+            "columns": [
+                {
+                    "field": "county_id"
+                },
+                {
+                    "field": "county_name"
+                }
+            ],
+            "has": "hasOne",
+            "wheres": [
+                {
+                    "field": "deleted_at",
+                    "match": "is",
+                    "value": "null"
+                }
+            ]
         }
     ],
-    "wheres": [
+    "deleteds": [
         {
-            "field": "created_at",
-            "match": "between",
-            "value": "2023-01-01~2023-10-01"
+            "field": "birthday",
+            "value": "date"
+        },
+        {
+            "field": "state",
+            "value": "1"
+        },
+        {
+            "field": "deleted_time",
+            "value": "timestamp"
+        },
+        {
+            "field": "deleted_at",
+            "value": "datetime"
         }
     ]
 }

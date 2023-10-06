@@ -264,5 +264,23 @@
                 "value": "江"
             }
         ]
+    ],
+    "deleteds": [
+        {
+            "field": "birthday",
+            "value": "date"
+        },
+        {
+            "field": "state",
+            "value": "1"
+        },
+        {
+            "field": "deleted_time",
+            "value": "timestamp"
+        },
+        {
+            "field": "deleted_at",
+            "value": "datetime"
+        }
     ]
 }

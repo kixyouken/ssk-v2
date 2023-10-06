@@ -1,0 +1,41 @@
+{
+    "name": "用户表",
+    "table": "users",
+    "joins": [
+        
+    ],
+    "joins_count": [
+        
+    ],
+    "withs": [],
+    "withs_count": [],
+    "withs_sum": [],
+    "columns": [
+        {
+            "field": "id"
+        },
+        {
+            "field": "name"
+        },
+        {
+            "field": "email"
+        },
+        {
+            "field": "master_university_id"
+        },
+        {
+            "field": "master_job_id"
+        },
+        {
+            "field": "created_at",
+            "format": "Y-m-d H:i:s"
+        }
+    ],
+    "wheres": [
+        {
+            "field": "created_at",
+            "match": "between",
+            "value": "2023-01-01~2023-10-01"
+        }
+    ]
+}
