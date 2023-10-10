@@ -1,15 +1,8 @@
 {
     "name": "用户表",
     "table": "users",
-    "joins": [
-        
-    ],
-    "joins_count": [
-        
-    ],
+    "joins": [],
     "withs": [],
-    "withs_count": [],
-    "withs_sum": [],
     "columns": [
         {
             "field": "id"

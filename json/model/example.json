@@ -77,15 +77,16 @@
             ]
         }
     ],
-    "joins_count": [
+    "joins_groups": [
         {
-            "table": "users",
-            "foreign": "master_university_id",
+            "table": "orders",
+            "foreign": "user_id",
             "key": "id",
             "join": "inner",
+            "type": "sum",
             "columns": [
                 {
-                    "field": "id"
+                    "field": "money"
                 }
             ],
             "wheres": [
@@ -97,24 +98,79 @@
             ],
             "orders": [
                 {
-                    "field": "id",
+                    "field": "money",
                     "sort": "desc"
                 }
             ]
-        }
-    ],
-    "joins_sum": [
+        },
         {
             "table": "orders",
             "foreign": "user_id",
             "key": "id",
             "join": "inner",
+            "type": "count",
+            "columns": [
+                {
+                    "field": "user_id"
+                }
+            ],
+            "wheres": [
+                {
+                    "field": "deleted_at",
+                    "match": "is",
+                    "value": "null"
+                }
+            ],
+            "orders": [
+                {
+                    "field": "user_id",
+                    "sort": "desc"
+                }
+            ]
+        },
+        {
+            "table": "orders",
+            "foreign": "user_id",
+            "key": "id",
+            "join": "inner",
+            "type": "max",
             "columns": [
                 {
                     "field": "money"
                 }
             ],
-            "wheres": [],
+            "wheres": [
+                {
+                    "field": "deleted_at",
+                    "match": "is",
+                    "value": "null"
+                }
+            ],
+            "orders": [
+                {
+                    "field": "money",
+                    "sort": "desc"
+                }
+            ]
+        },
+        {
+            "table": "orders",
+            "foreign": "user_id",
+            "key": "id",
+            "join": "inner",
+            "type": "min",
+            "columns": [
+                {
+                    "field": "money"
+                }
+            ],
+            "wheres": [
+                {
+                    "field": "deleted_at",
+                    "match": "is",
+                    "value": "null"
+                }
+            ],
             "orders": [
                 {
                     "field": "money",

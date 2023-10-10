@@ -1,78 +1,70 @@
 {
     "name": "users表model",
     "table": "users",
-    "joins_sum": [],
-    "joins_count": [],
-    "withs": [
+    "joins": [],
+    "joins_groups": [
         {
             "table": "orders",
             "foreign": "user_id",
             "key": "id",
-            "columns": [
-                {
-                    "field": "id"
-                },
-                {
-                    "field": "money"
-                }
-            ],
-            "has": "hasMany",
-            "wheres": [
-                {
-                    "field": "deleted_at",
-                    "match": "is",
-                    "value": "null"
-                }
-            ]
-        }
-    ],
-    "withs_groups": [
-        {
-            "table": "orders",
-            "foreign": "user_id",
-            "key": "id",
-            "columns": [
-                {
-                    "field": "money"
-                }
-            ],
+            "join": "inner",
             "type": "sum",
+            "columns": [
+                {
+                    "field": "money"
+                }
+            ],
             "wheres": [
                 {
                     "field": "deleted_at",
                     "match": "is",
                     "value": "null"
                 }
-            ]
+            ],
+            "orders": []
         },
         {
             "table": "orders",
             "foreign": "user_id",
             "key": "id",
+            "join": "inner",
             "type": "count",
+            "columns": [
+                {
+                    "field": "user_id"
+                }
+            ],
             "wheres": [
                 {
                     "field": "deleted_at",
                     "match": "is",
                     "value": "null"
                 }
-            ]
+            ],
+            "orders": []
         },
         {
             "table": "orders",
             "foreign": "user_id",
             "key": "id",
-            "columns": [
-                {
-                    "field": "money"
-                }
-            ],
+            "join": "inner",
             "type": "max",
+            "columns": [
+                {
+                    "field": "money"
+                }
+            ],
             "wheres": [
                 {
                     "field": "deleted_at",
                     "match": "is",
                     "value": "null"
+                }
+            ],
+            "orders": [
+                {
+                    "field": "money",
+                    "sort": "desc"
                 }
             ]
         },
@@ -80,21 +72,25 @@
             "table": "orders",
             "foreign": "user_id",
             "key": "id",
+            "join": "inner",
+            "type": "min",
             "columns": [
                 {
                     "field": "money"
                 }
             ],
-            "type": "min",
             "wheres": [
                 {
                     "field": "deleted_at",
                     "match": "is",
                     "value": "null"
                 }
-            ]
+            ],
+            "orders": []
         }
     ],
+    "withs": [],
+    "withs_groups": [],
     "deleteds": [
         {
             "field": "birthday",

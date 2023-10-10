@@ -60,22 +60,6 @@ func (s *sTableServices) GetTableFileQueryBefore(c *gin.Context, table tables.Ta
 		orders = s.GetTableOrders(c, table)
 	}
 
-	if table.JoinsCount != nil && len(table.JoinsCount) > 0 {
-		tableJoinsCountColumns := s.GetTableJoinsCountColumns(c, table)
-		columns = append(columns, tableJoinsCountColumns...)
-
-		tableJoinsCount := s.GetTableJoinsCount(c, table)
-		joins = append(joins, tableJoinsCount...)
-
-		tableJoinsGroups := s.GetTableJoinsCountGroups(c, table)
-		groups = append(groups, tableJoinsGroups...)
-
-		tableJoinsCountOrders := s.GetTableJoinsCountOrders(c, table)
-		if tableJoinsCountOrders != "" {
-			orders = tableJoinsCountOrders + "," + orders
-		}
-	}
-
 	return columns, joins, groups, orders
 }
 
@@ -188,82 +172,6 @@ func (s *sTableServices) GetTableJoins(c *gin.Context, table tables.TableJson) [
 	return joins
 }
 
-// GetTableJoinsCountGroups 获取 table.json 文件 joinsCount 时 group 信息
-//
-//	@receiver s
-//	@param c
-//	@param table
-//	@return []string
-func (s *sTableServices) GetTableJoinsCountGroups(c *gin.Context, table tables.TableJson) []string {
-	groups := []string{}
-	for _, value := range table.JoinsCount {
-		modelJson := ModelServices.GetModelFile(c, value.Model)
-		groups = append(groups, modelJson.Table+"."+value.Foreign)
-	}
-
-	return groups
-}
-
-// GetTableJoinsCountOrders 获取 table.json 文件 joinsCount 下 orders 信息
-//
-//	@receiver s
-//	@param c
-//	@param table
-//	@return string
-func (s *sTableServices) GetTableJoinsCountOrders(c *gin.Context, table tables.TableJson) string {
-	orders := []string{}
-	for _, value := range table.JoinsCount {
-		for _, v := range value.Orders {
-			modelJson := ModelServices.GetModelFile(c, value.Model)
-			orders = append(orders, modelJson.Table+"_"+v.Field+"_count "+strings.ToUpper(v.Sort))
-		}
-	}
-
-	return strings.Join(orders, ",")
-}
-
-// GetTableJoinsCountColumns 获取 table.json 文件 joinsCount 下 columns 信息
-//
-//	@receiver s
-//	@param c
-//	@param table
-//	@return []string
-func (s *sTableServices) GetTableJoinsCountColumns(c *gin.Context, table tables.TableJson) []string {
-	columns := []string{}
-	for _, value := range table.JoinsCount {
-		modelJson := ModelServices.GetModelFile(c, value.Model)
-		for _, v := range value.Columns {
-			columns = append(columns, "COUNT( "+modelJson.Table+"."+v.Field+" ) AS "+modelJson.Table+"_"+v.Field+"_count")
-		}
-	}
-
-	return columns
-}
-
-// GetTableJoinsCount 获取 table.json 文件 joinsCount 信息
-//
-//	@receiver s
-//	@param c
-//	@param table
-//	@return []string
-func (s *sTableServices) GetTableJoinsCount(c *gin.Context, table tables.TableJson) []string {
-	modelJson := ModelServices.GetModelFile(c, table.Model)
-	joins := []string{}
-	for _, value := range table.JoinsCount {
-		modelJoinJson := ModelServices.GetModelFile(c, value.Model)
-		joinTable := strings.ToUpper(value.Join) + " JOIN " + modelJoinJson.Table + " ON " + modelJoinJson.Table + "." + value.Foreign + " = " + modelJson.Table + "." + value.Key
-		if value.Wheres != nil && len(value.Wheres) > 0 {
-			joinWhere := s.HandleTableJoinsCountWheres(c, value.Wheres, modelJoinJson.Table)
-			if joinWhere != nil {
-				joinTable += " AND ( " + strings.Join(joinWhere, " AND ") + " )"
-			}
-		}
-		joins = append(joins, joinTable)
-	}
-
-	return joins
-}
-
 // GetTableJoinsColumns 获取 table.json 文件 joins 下 columns 信息
 //
 //	@receiver s
@@ -363,40 +271,4 @@ func (s *sTableServices) HandleTableWithsWheres(c *gin.Context, wheres []tables.
 	}
 
 	return strings.Join(whereSlice, " AND ")
-}
-
-// HandleTableJoinsCountWheres 处理 table.json 文件 joinsCount 下 wheres 信息
-//
-//	@receiver s
-//	@param c
-//	@param wheres
-//	@param table
-//	@return string
-func (s *sTableServices) HandleTableJoinsCountWheres(c *gin.Context, wheres []tables.Wheres, table string) []string {
-	whereSlice := []string{}
-	for _, v := range wheres {
-		switch strings.ToUpper(v.Match) {
-		case "=", "!=", "<>", ">", "<", ">=", "<=":
-			whereSlice = append(whereSlice, table+"."+v.Field+" "+v.Match+" '"+v.Value+"'")
-		case "IN":
-			whereSlice = append(whereSlice, table+"."+v.Field+" IN ("+v.Value+")")
-		case "LIKE":
-			whereSlice = append(whereSlice, table+"."+v.Field+" LIKE '%"+v.Value+"%'")
-		case "LIKE.LEFT":
-			whereSlice = append(whereSlice, table+"."+v.Field+" LIKE '%"+v.Value)
-		case "LIKE.RIGHT":
-			whereSlice = append(whereSlice, table+"."+v.Field+" LIKE '"+v.Value+"%'")
-		case "BETWEEN":
-			values := strings.Split(v.Value, "~")
-			whereSlice = append(whereSlice, table+"."+v.Field+" BETWEEN '"+values[0]+"' AND '"+values[1]+"'")
-		case "IS":
-			switch strings.ToUpper(v.Value) {
-			case "NULL":
-				whereSlice = append(whereSlice, table+"."+v.Field+" IS NULL")
-			case "NOTNULL":
-				whereSlice = append(whereSlice, table+"."+v.Field+" IS NOT NULL")
-			}
-		}
-	}
-	return whereSlice
 }

@@ -35,26 +35,12 @@ func Page(c *gin.Context) {
 	joins := services.ModelServices.GetModelJoins(c, *modelJson)
 
 	groups := []string{}
-	modelJoinsCountGroups := services.ModelServices.GetModelJoinsCountGroups(c, *modelJson)
-	groups = append(groups, modelJoinsCountGroups...)
-
-	modelJoinsSumGroups := services.ModelServices.GetModelJoinsSumGroups(c, *modelJson)
-	groups = append(groups, modelJoinsSumGroups...)
-
-	modelBeforeColumns, modelBeforeJoins, modelBeforeOrders := services.ModelServices.GetModelFileQueryBefore(c, *modelJson)
-	columns = append(columns, modelBeforeColumns...)
-	joins = append(joins, modelBeforeJoins...)
-	if modelBeforeOrders != "" {
-		orders = strings.TrimRight(modelBeforeOrders+","+orders, ",")
-	}
-
-	tableBeforeColumns, tableBeforeJoins, tableBeforeGroups, tableBeforeOrders := services.TableServices.GetTableFileQueryBefore(c, *tableJson)
-	columns = append(columns, tableBeforeColumns...)
-	joins = append(joins, tableBeforeJoins...)
-	groups = append(groups, tableBeforeGroups...)
-	if tableBeforeOrders != "" {
-		orders += "," + tableBeforeOrders
-		orders = strings.Trim(orders, ",")
+	modelJoinsGroupsJoins, modelJoinsGroupsColumns, modelJoinsGroupsGroups, modelJoinsGroupsOrders := services.ModelServices.GetModelJoinsGroups(c, *modelJson)
+	joins = append(joins, modelJoinsGroupsJoins...)
+	columns = append(columns, modelJoinsGroupsColumns...)
+	groups = append(groups, modelJoinsGroupsGroups...)
+	if modelJoinsGroupsOrders != "" {
+		orders = strings.Trim(modelJoinsGroupsOrders+","+orders, ",")
 	}
 
 	if modelJson.Groups != nil {

@@ -549,6 +549,10 @@ func (s *sDbServices) GroupsWheres(c *gin.Context) func(db *gorm.DB) *gorm.DB {
 			db.Select("COUNT( DISTINCT( " + value.Group.Field + " ) )")
 		}
 
+		for _, value := range modelJson.JoinsGroups {
+			db.Select("COUNT( DISTINCT( " + value.Table + "." + value.Foreign + " ) )")
+		}
+
 		return db
 	}
 }

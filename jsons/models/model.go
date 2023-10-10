@@ -4,8 +4,7 @@ type ModelJson struct {
 	Name        string        `json:"name"`
 	Table       string        `json:"table"`
 	Joins       []Joins       `json:"joins"`
-	JoinsCount  []JoinsCount  `json:"joins_count"`
-	JoinsSum    []JoinsSum    `json:"joins_sum"`
+	JoinsGroups []JoinsGroups `json:"joins_groups"`
 	Withs       []Withs       `json:"withs"`
 	WithsGroups []WithsGroups `json:"withs_groups"`
 	Columns     []Columns     `json:"columns"`
@@ -30,23 +29,14 @@ type Joins struct {
 	Wheres  []Wheres  `json:"wheres"`
 }
 
-type JoinsCount struct {
+type JoinsGroups struct {
 	Table   string    `json:"table"`
 	Foreign string    `json:"foreign"`
 	Key     string    `json:"key"`
 	Join    string    `json:"join"`
-	Wheres  []Wheres  `json:"wheres"`
+	Type    string    `json:"type"`
 	Columns []Columns `json:"columns"`
-	Orders  []Orders  `json:"orders"`
-}
-
-type JoinsSum struct {
-	Table   string    `json:"table"`
-	Foreign string    `json:"foreign"`
-	Key     string    `json:"key"`
-	Join    string    `json:"join"`
 	Wheres  []Wheres  `json:"wheres"`
-	Columns []Columns `json:"columns"`
 	Orders  []Orders  `json:"orders"`
 }
 

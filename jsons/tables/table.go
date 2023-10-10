@@ -1,16 +1,15 @@
 package tables
 
 type TableJson struct {
-	Name       string       `json:"name"`
-	Model      string       `json:"model"`
-	Orders     []Orders     `json:"orders"`
-	Page       int          `json:"page"`
-	Limit      int          `json:"limit"`
-	Wheres     []Wheres     `json:"wheres"`
-	WheresOr   [][]WheresOr `json:"wheres_or"`
-	Withs      []Withs      `json:"withs"`
-	Joins      []Joins      `json:"joins"`
-	JoinsCount []JoinsCount `json:"joins_count"`
+	Name     string       `json:"name"`
+	Model    string       `json:"model"`
+	Orders   []Orders     `json:"orders"`
+	Page     int          `json:"page"`
+	Limit    int          `json:"limit"`
+	Wheres   []Wheres     `json:"wheres"`
+	WheresOr [][]WheresOr `json:"wheres_or"`
+	Withs    []Withs      `json:"withs"`
+	Joins    []Joins      `json:"joins"`
 }
 
 type Orders struct {
@@ -52,14 +51,4 @@ type Joins struct {
 	Join    string    `json:"join"`
 	Columns []Columns `json:"columns"`
 	Wheres  []Wheres  `json:"wheres"`
-}
-
-type JoinsCount struct {
-	Model   string    `json:"model"`
-	Foreign string    `json:"foreign"`
-	Key     string    `json:"key"`
-	Join    string    `json:"join"`
-	Wheres  []Wheres  `json:"wheres"`
-	Columns []Columns `json:"columns"`
-	Orders  []Orders  `json:"orders"`
 }

@@ -13,35 +13,6 @@
         }
     ],
     "withs": [],
-    "withs_count": [
-
-    ],
-    "joins_count": [
-        {
-            "table": "users",
-            "foreign": "master_university_id",
-            "key": "id",
-            "join": "inner",
-            "columns": [
-                {
-                    "field": "id"
-                }
-            ],
-            "wheres": [
-                {
-                    "field": "deleted_at",
-                    "match": "is",
-                    "value": "null"
-                }
-            ],
-            "orders": [
-                {
-                    "field": "id",
-                    "sort": "desc"
-                }
-            ]
-        }
-    ],
     "wheres": [],
     "orders": [
         {
