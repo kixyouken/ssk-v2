@@ -116,14 +116,6 @@ func (s *sTableServices) GetTableFileQueryAfterList(c *gin.Context, result []map
 			}
 		}
 	}
-
-	if table.WithsCount != nil && len(table.WithsCount) > 0 {
-		ResultServices.HandleTableWithsCountList(c, result, table)
-	}
-
-	if table.WithsSum != nil && len(table.WithsSum) > 0 {
-		ResultServices.HandleTableWithsSumList(c, result, table)
-	}
 }
 
 // GetTableOrders 获取 table.json 文件 orders 信息

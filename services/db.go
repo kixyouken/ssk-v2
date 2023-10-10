@@ -147,6 +147,40 @@ func (s *sDbServices) WithsSum(c *gin.Context, table string, out interface{}, co
 		Scan(out).Error
 }
 
+// WithsMax WithsMax 统计
+//
+//	@receiver s
+//	@param c
+//	@param table
+//	@param out
+//	@param column
+//	@param wheres
+//	@param search
+//	@return error
+func (s *sDbServices) WithsMax(c *gin.Context, table string, out interface{}, column interface{}, wheres interface{}, search interface{}) error {
+	return db.Table(table).Where(wheres).Where(search).
+		Select(column).
+		Limit(1).
+		Scan(out).Error
+}
+
+// WithsMin WithsMin 统计
+//
+//	@receiver s
+//	@param c
+//	@param table
+//	@param out
+//	@param column
+//	@param wheres
+//	@param search
+//	@return error
+func (s *sDbServices) WithsMin(c *gin.Context, table string, out interface{}, column interface{}, wheres interface{}, search interface{}) error {
+	return db.Table(table).Where(wheres).Where(search).
+		Select(column).
+		Limit(1).
+		Scan(out).Error
+}
+
 // Read 获取详情
 //
 //	@receiver s

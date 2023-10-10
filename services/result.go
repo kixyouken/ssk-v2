@@ -192,14 +192,14 @@ func (s *sResultServices) HandleModelFieldFormatList(c *gin.Context, result []ma
 	}
 }
 
-// HandleModelWithsCount 处理 model 下 withs_count 关联信息
+// HandleModelWithsGroups 处理 model 下 withs_groups 统计信息
 //
 //	@receiver s
 //	@param c
 //	@param result
 //	@param model
-func (s *sResultServices) HandleModelWithsCount(c *gin.Context, result map[string]interface{}, model models.ModelJson) {
-	for _, value := range model.WithsCount {
+func (s *sResultServices) HandleModelWithsGroups(c *gin.Context, result map[string]interface{}, model models.ModelJson) {
+	for _, value := range model.WithsGroups {
 		withsWheres := []string{}
 		if value.Wheres != nil && len(value.Wheres) > 0 {
 			for _, v := range value.Wheres {
@@ -227,294 +227,55 @@ func (s *sResultServices) HandleModelWithsCount(c *gin.Context, result map[strin
 				}
 			}
 		}
-
 		wheres := strings.Join(withsWheres, " AND ")
-		result["withs_"+value.Table+"_count"] = DbService.WithsCount(c, value.Table, map[string]interface{}{value.Foreign: result[value.Key]}, wheres)
+
+		switch strings.ToUpper(value.Type) {
+		case "SUM":
+			withsSum := []string{}
+			if value.Columns != nil && len(value.Columns) > 0 {
+				for _, v := range value.Columns {
+					withsSum = append(withsSum, "SUM("+v.Field+") AS "+v.Field+"_sum")
+				}
+			}
+			sumResult := map[string]interface{}{}
+			DbService.WithsSum(c, value.Table, &sumResult, withsSum, map[string]interface{}{value.Foreign: result[value.Key]}, wheres)
+			result["withs_"+value.Table+"_sum"] = sumResult
+
+		case "COUNT":
+			result["withs_"+value.Table+"_count"] = DbService.WithsCount(c, value.Table, map[string]interface{}{value.Foreign: result[value.Key]}, wheres)
+
+		case "MAX":
+			withsMax := []string{}
+			if value.Columns != nil && len(value.Columns) > 0 {
+				for _, v := range value.Columns {
+					withsMax = append(withsMax, "MAX("+v.Field+") AS "+v.Field+"_max")
+				}
+			}
+			maxResult := map[string]interface{}{}
+			DbService.WithsMax(c, value.Table, &maxResult, withsMax, map[string]interface{}{value.Foreign: result[value.Key]}, wheres)
+			result["withs_"+value.Table+"_max"] = maxResult
+		case "MIN":
+			withsMin := []string{}
+			if value.Columns != nil && len(value.Columns) > 0 {
+				for _, v := range value.Columns {
+					withsMin = append(withsMin, "MIN("+v.Field+") AS "+v.Field+"_min")
+				}
+			}
+			minResult := map[string]interface{}{}
+			DbService.WithsMin(c, value.Table, &minResult, withsMin, map[string]interface{}{value.Foreign: result[value.Key]}, wheres)
+			result["withs_"+value.Table+"_min"] = minResult
+		}
 	}
 }
 
-// HandleModelWithsCountList 处理 model 下 withs_count 关联信息
+// HandleModelWithsGroupsList 处理 model 下 withs_groups 统计信息
 //
 //	@receiver s
 //	@param c
 //	@param result
 //	@param model
-func (s *sResultServices) HandleModelWithsCountList(c *gin.Context, result []map[string]interface{}, model models.ModelJson) {
-	for _, value := range result {
-		s.HandleModelWithsCount(c, value, model)
-	}
-}
-
-// HandleTableWithsCount 处理 table 下 withs_count 关联信息
-//
-//	@receiver s
-//	@param c
-//	@param result
-//	@param table
-func (s *sResultServices) HandleTableWithsCount(c *gin.Context, result map[string]interface{}, table tables.TableJson) {
-	for _, value := range table.WithsCount {
-		modelJson := ModelServices.GetModelFile(c, value.Model)
-		withsWheres := []string{}
-		if value.Wheres != nil && len(value.Wheres) > 0 {
-			for _, v := range value.Wheres {
-				switch strings.ToUpper(v.Match) {
-				case "=", "!=", "<>", ">", "<", ">=", "<=":
-					withsWheres = append(withsWheres, v.Field+" "+v.Match+" '"+v.Value+"'")
-				case "IN":
-					withsWheres = append(withsWheres, v.Field+" IN ("+v.Value+")")
-				case "LIKE":
-					withsWheres = append(withsWheres, v.Field+" LIKE '%"+v.Value+"%'")
-				case "LIKE.LEFT":
-					withsWheres = append(withsWheres, v.Field+" LIKE '%"+v.Value)
-				case "LIKE.RIGHT":
-					withsWheres = append(withsWheres, v.Field+" LIKE '"+v.Value+"%'")
-				case "BETWEEN":
-					values := strings.Split(v.Value, "~")
-					withsWheres = append(withsWheres, v.Field+" BETWEEN '"+values[0]+"' AND '"+values[1]+"'")
-				case "IS":
-					switch strings.ToUpper(v.Value) {
-					case "NULL":
-						withsWheres = append(withsWheres, v.Field+" IS NULL")
-					case "NOTNULL":
-						withsWheres = append(withsWheres, v.Field+" IS NOT NULL")
-					}
-				}
-			}
-		}
-
-		wheres := strings.Join(withsWheres, " AND ")
-		result["withs_"+modelJson.Table+"_count"] = DbService.WithsCount(c, modelJson.Table, map[string]interface{}{value.Foreign: result[value.Key]}, wheres)
-	}
-}
-
-// HandleTableWithsCountList 处理 table 下 withs_count 关联信息
-//
-//	@receiver s
-//	@param c
-//	@param result
-//	@param table
-func (s *sResultServices) HandleTableWithsCountList(c *gin.Context, result []map[string]interface{}, table tables.TableJson) {
-	for _, value := range result {
-		s.HandleTableWithsCount(c, value, table)
-	}
-}
-
-// HandleFormWithsCount 处理 form 下 withs_count 关联信息
-//
-//	@receiver s
-//	@param c
-//	@param result
-//	@param form
-func (s *sResultServices) HandleFormWithsCount(c *gin.Context, result map[string]interface{}, form forms.FormJson) {
-	for _, value := range form.WithsCount {
-		modelJson := ModelServices.GetModelFile(c, value.Model)
-		withsWheres := []string{}
-		if value.Wheres != nil && len(value.Wheres) > 0 {
-			for _, v := range value.Wheres {
-				switch strings.ToUpper(v.Match) {
-				case "=", "!=", "<>", ">", "<", ">=", "<=":
-					withsWheres = append(withsWheres, v.Field+" "+v.Match+" '"+v.Value+"'")
-				case "IN":
-					withsWheres = append(withsWheres, v.Field+" IN ("+v.Value+")")
-				case "LIKE":
-					withsWheres = append(withsWheres, v.Field+" LIKE '%"+v.Value+"%'")
-				case "LIKE.LEFT":
-					withsWheres = append(withsWheres, v.Field+" LIKE '%"+v.Value)
-				case "LIKE.RIGHT":
-					withsWheres = append(withsWheres, v.Field+" LIKE '"+v.Value+"%'")
-				case "BETWEEN":
-					values := strings.Split(v.Value, "~")
-					withsWheres = append(withsWheres, v.Field+" BETWEEN '"+values[0]+"' AND '"+values[1]+"'")
-				case "IS":
-					switch strings.ToUpper(v.Value) {
-					case "NULL":
-						withsWheres = append(withsWheres, v.Field+" IS NULL")
-					case "NOTNULL":
-						withsWheres = append(withsWheres, v.Field+" IS NOT NULL")
-					}
-				}
-			}
-		}
-
-		wheres := strings.Join(withsWheres, " AND ")
-		result["withs_"+modelJson.Table+"_count"] = DbService.WithsCount(c, modelJson.Table, map[string]interface{}{value.Foreign: result[value.Key]}, wheres)
-	}
-}
-
-// HandleModelWithsSum 处理 model 下 withs_sum 关联信息
-//
-//	@receiver s
-//	@param c
-//	@param result
-//	@param model
-func (s *sResultServices) HandleModelWithsSum(c *gin.Context, result map[string]interface{}, model models.ModelJson) {
-	for _, value := range model.WithsSum {
-		withsSum := []string{}
-		if value.Columns != nil && len(value.Columns) > 0 {
-			for _, v := range value.Columns {
-				withsSum = append(withsSum, "SUM("+v.Field+") AS "+v.Field+"_sum")
-			}
-		}
-
-		withsWheres := []string{}
-		if value.Wheres != nil && len(value.Wheres) > 0 {
-			for _, v := range value.Wheres {
-				switch strings.ToUpper(v.Match) {
-				case "=", "!=", "<>", ">", "<", ">=", "<=":
-					withsWheres = append(withsWheres, v.Field+" "+v.Match+" '"+v.Value+"'")
-				case "IN":
-					withsWheres = append(withsWheres, v.Field+" IN ("+v.Value+")")
-				case "LIKE":
-					withsWheres = append(withsWheres, v.Field+" LIKE '%"+v.Value+"%'")
-				case "LIKE.LEFT":
-					withsWheres = append(withsWheres, v.Field+" LIKE '%"+v.Value)
-				case "LIKE.RIGHT":
-					withsWheres = append(withsWheres, v.Field+" LIKE '"+v.Value+"%'")
-				case "BETWEEN":
-					values := strings.Split(v.Value, "~")
-					withsWheres = append(withsWheres, v.Field+" BETWEEN '"+values[0]+"' AND '"+values[1]+"'")
-				case "IS":
-					switch strings.ToUpper(v.Value) {
-					case "NULL":
-						withsWheres = append(withsWheres, v.Field+" IS NULL")
-					case "NOTNULL":
-						withsWheres = append(withsWheres, v.Field+" IS NOT NULL")
-					}
-				}
-			}
-		}
-
-		sumResult := map[string]interface{}{}
-		wheres := strings.Join(withsWheres, " AND ")
-		DbService.WithsSum(c, value.Table, &sumResult, withsSum, map[string]interface{}{value.Foreign: result[value.Key]}, wheres)
-		result["withs_"+value.Table+"_sum"] = sumResult
-	}
-}
-
-// HandleModelWithsSumList 处理 model 下 withs_sum 关联信息
-//
-//	@receiver s
-//	@param c
-//	@param result
-//	@param model
-func (s *sResultServices) HandleModelWithsSumList(c *gin.Context, result []map[string]interface{}, model models.ModelJson) {
-	for _, value := range result {
-		s.HandleModelWithsSum(c, value, model)
-	}
-}
-
-// HandleTableWithsSum 处理 table 下 withs_sum 关联信息
-//
-//	@receiver s
-//	@param c
-//	@param result
-//	@param table
-func (s *sResultServices) HandleTableWithsSum(c *gin.Context, result map[string]interface{}, table tables.TableJson) {
-	for _, value := range table.WithsSum {
-		modelJson := ModelServices.GetModelFile(c, value.Model)
-
-		withsSum := []string{}
-		if value.Columns != nil && len(value.Columns) > 0 {
-			for _, v := range value.Columns {
-				withsSum = append(withsSum, "SUM("+v.Field+") AS "+v.Field+"_sum")
-			}
-		}
-
-		withsWheres := []string{}
-		if value.Wheres != nil && len(value.Wheres) > 0 {
-			for _, v := range value.Wheres {
-				switch strings.ToUpper(v.Match) {
-				case "=", "!=", "<>", ">", "<", ">=", "<=":
-					withsWheres = append(withsWheres, v.Field+" "+v.Match+" '"+v.Value+"'")
-				case "IN":
-					withsWheres = append(withsWheres, v.Field+" IN ("+v.Value+")")
-				case "LIKE":
-					withsWheres = append(withsWheres, v.Field+" LIKE '%"+v.Value+"%'")
-				case "LIKE.LEFT":
-					withsWheres = append(withsWheres, v.Field+" LIKE '%"+v.Value)
-				case "LIKE.RIGHT":
-					withsWheres = append(withsWheres, v.Field+" LIKE '"+v.Value+"%'")
-				case "BETWEEN":
-					values := strings.Split(v.Value, "~")
-					withsWheres = append(withsWheres, v.Field+" BETWEEN '"+values[0]+"' AND '"+values[1]+"'")
-				case "IS":
-					switch strings.ToUpper(v.Value) {
-					case "NULL":
-						withsWheres = append(withsWheres, v.Field+" IS NULL")
-					case "NOTNULL":
-						withsWheres = append(withsWheres, v.Field+" IS NOT NULL")
-					}
-				}
-			}
-		}
-
-		sumResult := map[string]interface{}{}
-		wheres := strings.Join(withsWheres, " AND ")
-		DbService.WithsSum(c, modelJson.Table, &sumResult, withsSum, map[string]interface{}{value.Foreign: result[value.Key]}, wheres)
-		result["withs_"+modelJson.Table+"_sum"] = sumResult
-	}
-}
-
-// HandleTableWithsSumList 处理 table 下 withs_sum 关联信息
-//
-//	@receiver s
-//	@param c
-//	@param result
-//	@param table
-func (s *sResultServices) HandleTableWithsSumList(c *gin.Context, result []map[string]interface{}, table tables.TableJson) {
-	for _, value := range result {
-		s.HandleTableWithsSum(c, value, table)
-	}
-}
-
-// HandleFormWithsSum 处理 form 下 withs_sum 关联信息
-//
-//	@receiver s
-//	@param c
-//	@param result
-//	@param form
-func (s *sResultServices) HandleFormWithsSum(c *gin.Context, result map[string]interface{}, form forms.FormJson) {
-	for _, value := range form.WithsSum {
-		modelJson := ModelServices.GetModelFile(c, value.Model)
-
-		withsSum := []string{}
-		if value.Columns != nil && len(value.Columns) > 0 {
-			for _, v := range value.Columns {
-				withsSum = append(withsSum, "SUM("+v.Field+") AS "+v.Field+"_sum")
-			}
-		}
-
-		withsWheres := []string{}
-		if value.Wheres != nil && len(value.Wheres) > 0 {
-			for _, v := range value.Wheres {
-				switch strings.ToUpper(v.Match) {
-				case "=", "!=", "<>", ">", "<", ">=", "<=":
-					withsWheres = append(withsWheres, v.Field+" "+v.Match+" '"+v.Value+"'")
-				case "IN":
-					withsWheres = append(withsWheres, v.Field+" IN ("+v.Value+")")
-				case "LIKE":
-					withsWheres = append(withsWheres, v.Field+" LIKE '%"+v.Value+"%'")
-				case "LIKE.LEFT":
-					withsWheres = append(withsWheres, v.Field+" LIKE '%"+v.Value)
-				case "LIKE.RIGHT":
-					withsWheres = append(withsWheres, v.Field+" LIKE '"+v.Value+"%'")
-				case "BETWEEN":
-					values := strings.Split(v.Value, "~")
-					withsWheres = append(withsWheres, v.Field+" BETWEEN '"+values[0]+"' AND '"+values[1]+"'")
-				case "IS":
-					switch strings.ToUpper(v.Value) {
-					case "NULL":
-						withsWheres = append(withsWheres, v.Field+" IS NULL")
-					case "NOTNULL":
-						withsWheres = append(withsWheres, v.Field+" IS NOT NULL")
-					}
-				}
-			}
-		}
-
-		sumResult := map[string]interface{}{}
-		wheres := strings.Join(withsWheres, " AND ")
-		DbService.WithsSum(c, modelJson.Table, &sumResult, withsSum, map[string]interface{}{value.Foreign: result[value.Key]}, wheres)
-		result["withs_"+modelJson.Table+"_sum"] = sumResult
+func (s *sResultServices) HandleModelWithsGroupsList(c *gin.Context, result []map[string]interface{}, model models.ModelJson) {
+	for _, v := range result {
+		s.HandleModelWithsGroups(c, v, model)
 	}
 }

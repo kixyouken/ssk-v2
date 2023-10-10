@@ -173,39 +173,73 @@
             ]
         }
     ],
-    "withs_count": [
+    "withs_groups": [
         {
-            "table": "users",
-            "foreign": "master_university_id",
+            "table": "orders",
+            "foreign": "user_id",
             "key": "id",
-            "wheres": [
+            "columns": [
                 {
-                    "field": "name",
-                    "match": "like",
-                    "value": "test"
-                },
+                    "field": "money"
+                }
+            ],
+            "type": "sum",
+            "wheres": [
                 {
                     "field": "deleted_at",
                     "match": "is",
                     "value": "null"
                 }
             ]
-        }
-    ],
-    "withs_sum": [
+        },
         {
-            "table": "event_users",
+            "table": "orders",
+            "foreign": "user_id",
+            "key": "id",
+            "type": "count",
+            "wheres": [
+                {
+                    "field": "deleted_at",
+                    "match": "is",
+                    "value": "null"
+                }
+            ]
+        },
+        {
+            "table": "orders",
             "foreign": "user_id",
             "key": "id",
             "columns": [
                 {
-                    "field": "event_id"
-                },
-                {
-                    "field": "event_meeting_schedule_id"
+                    "field": "money"
                 }
             ],
-            "wheres": []
+            "type": "max",
+            "wheres": [
+                {
+                    "field": "deleted_at",
+                    "match": "is",
+                    "value": "null"
+                }
+            ]
+        },
+        {
+            "table": "orders",
+            "foreign": "user_id",
+            "key": "id",
+            "columns": [
+                {
+                    "field": "money"
+                }
+            ],
+            "type": "min",
+            "wheres": [
+                {
+                    "field": "deleted_at",
+                    "match": "is",
+                    "value": "null"
+                }
+            ]
         }
     ],
     "columns": [

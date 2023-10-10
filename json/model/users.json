@@ -3,7 +3,98 @@
     "table": "users",
     "joins_sum": [],
     "joins_count": [],
-    "withs": [],
+    "withs": [
+        {
+            "table": "orders",
+            "foreign": "user_id",
+            "key": "id",
+            "columns": [
+                {
+                    "field": "id"
+                },
+                {
+                    "field": "money"
+                }
+            ],
+            "has": "hasMany",
+            "wheres": [
+                {
+                    "field": "deleted_at",
+                    "match": "is",
+                    "value": "null"
+                }
+            ]
+        }
+    ],
+    "withs_groups": [
+        {
+            "table": "orders",
+            "foreign": "user_id",
+            "key": "id",
+            "columns": [
+                {
+                    "field": "money"
+                }
+            ],
+            "type": "sum",
+            "wheres": [
+                {
+                    "field": "deleted_at",
+                    "match": "is",
+                    "value": "null"
+                }
+            ]
+        },
+        {
+            "table": "orders",
+            "foreign": "user_id",
+            "key": "id",
+            "type": "count",
+            "wheres": [
+                {
+                    "field": "deleted_at",
+                    "match": "is",
+                    "value": "null"
+                }
+            ]
+        },
+        {
+            "table": "orders",
+            "foreign": "user_id",
+            "key": "id",
+            "columns": [
+                {
+                    "field": "money"
+                }
+            ],
+            "type": "max",
+            "wheres": [
+                {
+                    "field": "deleted_at",
+                    "match": "is",
+                    "value": "null"
+                }
+            ]
+        },
+        {
+            "table": "orders",
+            "foreign": "user_id",
+            "key": "id",
+            "columns": [
+                {
+                    "field": "money"
+                }
+            ],
+            "type": "min",
+            "wheres": [
+                {
+                    "field": "deleted_at",
+                    "match": "is",
+                    "value": "null"
+                }
+            ]
+        }
+    ],
     "deleteds": [
         {
             "field": "birthday",

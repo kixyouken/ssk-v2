@@ -89,12 +89,8 @@ func (s *sModelServices) GetModelFileQueryAfter(c *gin.Context, result map[strin
 		ResultServices.HandleModelWiths(c, result, model)
 	}
 
-	if model.WithsCount != nil && len(model.WithsCount) > 0 {
-		ResultServices.HandleModelWithsCount(c, result, model)
-	}
-
-	if model.WithsSum != nil && len(model.WithsSum) > 0 {
-		ResultServices.HandleModelWithsSum(c, result, model)
+	if model.WithsGroups != nil && len(model.WithsGroups) > 0 {
+		ResultServices.HandleModelWithsGroups(c, result, model)
 	}
 
 	if model.Columns != nil && len(model.Columns) > 0 {
@@ -133,12 +129,8 @@ func (s *sModelServices) GetModelFileQueryAfterList(c *gin.Context, result []map
 		}
 	}
 
-	if model.WithsCount != nil && len(model.WithsCount) > 0 {
-		ResultServices.HandleModelWithsCountList(c, result, model)
-	}
-
-	if model.WithsSum != nil && len(model.WithsSum) > 0 {
-		ResultServices.HandleModelWithsSumList(c, result, model)
+	if model.WithsGroups != nil && len(model.WithsGroups) > 0 {
+		ResultServices.HandleModelWithsGroupsList(c, result, model)
 	}
 
 	if model.Columns != nil && len(model.Columns) > 0 {

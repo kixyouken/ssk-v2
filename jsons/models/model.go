@@ -1,20 +1,19 @@
 package models
 
 type ModelJson struct {
-	Name       string       `json:"name"`
-	Table      string       `json:"table"`
-	Joins      []Joins      `json:"joins"`
-	JoinsCount []JoinsCount `json:"joins_count"`
-	JoinsSum   []JoinsSum   `json:"joins_sum"`
-	Withs      []Withs      `json:"withs"`
-	WithsCount []WithsCount `json:"withs_count"`
-	WithsSum   []WithsSum   `json:"withs_sum"`
-	Columns    []Columns    `json:"columns"`
-	Wheres     []Wheres     `json:"wheres"`
-	WheresOr   [][]WheresOr `json:"wheres_or"`
-	Orders     []Orders     `json:"orders"`
-	Deleteds   []Deleteds   `json:"deleteds"`
-	Groups     []Groups     `json:"groups"`
+	Name        string        `json:"name"`
+	Table       string        `json:"table"`
+	Joins       []Joins       `json:"joins"`
+	JoinsCount  []JoinsCount  `json:"joins_count"`
+	JoinsSum    []JoinsSum    `json:"joins_sum"`
+	Withs       []Withs       `json:"withs"`
+	WithsGroups []WithsGroups `json:"withs_groups"`
+	Columns     []Columns     `json:"columns"`
+	Wheres      []Wheres      `json:"wheres"`
+	WheresOr    [][]WheresOr  `json:"wheres_or"`
+	Orders      []Orders      `json:"orders"`
+	Deleteds    []Deleteds    `json:"deleteds"`
+	Groups      []Groups      `json:"groups"`
 }
 
 type Columns struct {
@@ -61,17 +60,11 @@ type Withs struct {
 	Wheres  []Wheres  `json:"wheres"`
 }
 
-type WithsCount struct {
-	Table   string   `json:"table"`
-	Foreign string   `json:"foreign"`
-	Key     string   `json:"key"`
-	Wheres  []Wheres `json:"wheres"`
-}
-
-type WithsSum struct {
+type WithsGroups struct {
 	Table   string    `json:"table"`
 	Foreign string    `json:"foreign"`
 	Key     string    `json:"key"`
+	Type    string    `json:"type"`
 	Wheres  []Wheres  `json:"wheres"`
 	Columns []Columns `json:"columns"`
 }

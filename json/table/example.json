@@ -118,41 +118,6 @@
             ]
         }
     ],
-    "withs_count": [
-        {
-            "model": "users",
-            "foreign": "master_university_id",
-            "key": "id",
-            "wheres": [
-                {
-                    "field": "name",
-                    "match": "like",
-                    "value": "test"
-                },
-                {
-                    "field": "deleted_at",
-                    "match": "is",
-                    "value": "null"
-                }
-            ]
-        }
-    ],
-    "withs_sum": [
-        {
-            "model": "event_users",
-            "foreign": "user_id",
-            "key": "id",
-            "columns": [
-                {
-                    "field": "event_id"
-                },
-                {
-                    "field": "event_meeting_schedule_id"
-                }
-            ],
-            "wheres": []
-        }
-    ],
     "page": 1,
     "limit": 10,
     "wheres": [

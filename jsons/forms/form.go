@@ -1,12 +1,10 @@
 package forms
 
 type FormJson struct {
-	Name       string       `json:"name"`
-	Model      string       `json:"model"`
-	Wheres     []Wheres     `json:"wheres"`
-	Withs      []Withs      `json:"withs"`
-	WithsCount []WithsCount `json:"withs_count"`
-	WithsSum   []WithsSum   `json:"withs_sum"`
+	Name   string   `json:"name"`
+	Model  string   `json:"model"`
+	Wheres []Wheres `json:"wheres"`
+	Withs  []Withs  `json:"withs"`
 }
 
 type Withs struct {
@@ -29,23 +27,8 @@ type Orders struct {
 	Sort  string `json:"sort"`
 }
 
-type WithsCount struct {
-	Model   string   `json:"model"`
-	Foreign string   `json:"foreign"`
-	Key     string   `json:"key"`
-	Wheres  []Wheres `json:"wheres"`
-}
-
 type Wheres struct {
 	Field string `json:"field"`
 	Match string `json:"match"`
 	Value string `json:"value"`
-}
-
-type WithsSum struct {
-	Model   string    `json:"model"`
-	Foreign string    `json:"foreign"`
-	Key     string    `json:"key"`
-	Wheres  []Wheres  `json:"wheres"`
-	Columns []Columns `json:"columns"`
 }

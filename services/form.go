@@ -63,14 +63,6 @@ func (s *sFormServices) GetFormFileQueryAfter(c *gin.Context, result map[string]
 			}
 		}
 	}
-
-	if form.WithsCount != nil && len(form.WithsCount) > 0 {
-		ResultServices.HandleFormWithsCount(c, result, form)
-	}
-
-	if form.WithsSum != nil && len(form.WithsSum) > 0 {
-		ResultServices.HandleFormWithsSum(c, result, form)
-	}
 }
 
 // GetFormWithsColumns 获取 form.json 文件 withs 下 columns 信息

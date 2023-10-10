@@ -9,8 +9,6 @@ type TableJson struct {
 	Wheres     []Wheres     `json:"wheres"`
 	WheresOr   [][]WheresOr `json:"wheres_or"`
 	Withs      []Withs      `json:"withs"`
-	WithsCount []WithsCount `json:"withs_count"`
-	WithsSum   []WithsSum   `json:"withs_sum"`
 	Joins      []Joins      `json:"joins"`
 	JoinsCount []JoinsCount `json:"joins_count"`
 }
@@ -64,19 +62,4 @@ type JoinsCount struct {
 	Wheres  []Wheres  `json:"wheres"`
 	Columns []Columns `json:"columns"`
 	Orders  []Orders  `json:"orders"`
-}
-
-type WithsCount struct {
-	Model   string   `json:"model"`
-	Foreign string   `json:"foreign"`
-	Key     string   `json:"key"`
-	Wheres  []Wheres `json:"wheres"`
-}
-
-type WithsSum struct {
-	Model   string    `json:"model"`
-	Foreign string    `json:"foreign"`
-	Key     string    `json:"key"`
-	Wheres  []Wheres  `json:"wheres"`
-	Columns []Columns `json:"columns"`
 }
