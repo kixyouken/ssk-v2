@@ -108,5 +108,12 @@
             "field": "deleted_at",
             "value": "datetime"
         }
+    ],
+    "wheres": [
+        {
+            "field": "deleted_at",
+            "match": "is",
+            "value": "null"
+        }
     ]
 }

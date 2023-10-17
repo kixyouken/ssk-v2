@@ -211,7 +211,7 @@ func (s *sDbServices) Save(c *gin.Context) {
 //	@param updates
 //	@return error
 func (s *sDbServices) Update(c *gin.Context, table string, id int, updates map[string]interface{}) error {
-	return db.Table(table).Where("id = ?", id).Updates(updates).Error
+	return db.Table(table).Where("id = ?", id).Scopes(s.FormWheres(c)).Updates(updates).Error
 }
 
 // Delete 根据 id 删除

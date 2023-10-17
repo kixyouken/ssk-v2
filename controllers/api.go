@@ -93,8 +93,18 @@ func Save(c *gin.Context) {
 	})
 }
 
+// Update 更新
+//
+//	@param c
 func Update(c *gin.Context) {
-
+	form := c.Param("form")
+	formJson := services.FormServices.GetFormFile(c, form)
+	modelJson := services.ModelServices.GetModelFile(c, formJson.Model)
+	idStr := c.Param("id")
+	idInt, _ := strconv.Atoi(idStr)
+	updates := map[string]interface{}{}
+	c.ShouldBind(&updates)
+	services.DbService.Update(c, modelJson.Table, idInt, updates)
 	c.JSON(200, gin.H{
 		"message": "Update",
 	})

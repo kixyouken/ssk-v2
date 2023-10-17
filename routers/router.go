@@ -16,7 +16,7 @@ func GetRouter() *gin.Engine {
 	{
 		admin.GET("/model/:model", controllers.GetModel)
 		admin.GET("/table/:table", controllers.GetTable)
-		admin.GET("form/:form", controllers.GetForm)
+		admin.GET("/form/:form", controllers.GetForm)
 	}
 
 	api := r.Group("api")
@@ -28,9 +28,9 @@ func GetRouter() *gin.Engine {
 		// 详情
 		api.GET("/form/:form/:id", controllers.Read)
 		// 新增
-		api.POST("/form/:model", controllers.Save)
+		api.POST("/form/:form", controllers.Save)
 		// 修改
-		api.PUT("/form/:model/:id", controllers.Update)
+		api.PUT("/form/:form/:id", controllers.Update)
 		// 删除
 		api.DELETE("/table/:table/:id", controllers.Delete)
 
