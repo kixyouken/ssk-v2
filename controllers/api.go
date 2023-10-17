@@ -86,10 +86,26 @@ func Read(c *gin.Context) {
 	})
 }
 
+// Save 添加数据
+//
+//	@param c
 func Save(c *gin.Context) {
+	form := c.Param("form")
+	formJson := services.FormServices.GetFormFile(c, form)
+	modelJson := services.ModelServices.GetModelFile(c, formJson.Model)
+	insert := map[string]interface{}{}
+	c.ShouldBind(&insert)
+	t := time.Now()
+	now := t.Format("2006-01-02 15:04:05")
+	insert["created_at"] = now
+	insert["updated_at"] = now
+	services.DbService.Save(c, modelJson.Table, insert, []string{"user_name", "created_at", "updated_at"})
 
+	result := map[string]interface{}{}
+	services.DbService.Last(c, modelJson.Table, &result, insert)
 	c.JSON(200, gin.H{
 		"message": "Save",
+		"id":      result["id"],
 	})
 }
 

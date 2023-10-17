@@ -198,8 +198,28 @@ func (s *sDbServices) Read(c *gin.Context, table string, id int, out interface{}
 		Find(out).Error
 }
 
-func (s *sDbServices) Save(c *gin.Context) {
+// Save 添加数据
+//
+//	@receiver s
+//	@param c
+//	@param table
+//	@param insert
+//	@param column
+//	@return error
+func (s *sDbServices) Save(c *gin.Context, table string, insert map[string]interface{}, column interface{}) error {
+	return db.Table(table).Select(column).Create(insert).Error
+}
 
+// Last 获取最后一条数据
+//
+//	@receiver s
+//	@param c
+//	@param table
+//	@param out
+//	@param where
+//	@return error
+func (s *sDbServices) Last(c *gin.Context, table string, out interface{}, where interface{}) error {
+	return db.Table(table).Where(where).Limit(1).Order("id DESC").Find(out).Error
 }
 
 // Update 根据 id 更新
