@@ -313,8 +313,19 @@
             "field": "master_university_id"
         },
         {
+            "field": "birthday",
+            "type": "date",
+            "format": "Y-m-d"
+        },
+        {
+            "field": "deleted_time",
+            "type": "int",
+            "format": "Y-m-d"
+        },
+        {
             "field": "created_at",
-            "format": "Y-m-d H:i:s"
+            "type": "timestamp",
+            "format": "Y-d-d H:i"
         }
     ],
     "wheres": [

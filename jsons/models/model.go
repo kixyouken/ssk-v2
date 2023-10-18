@@ -19,6 +19,7 @@ type Columns struct {
 	Field   string `json:"field"`
 	Format  string `json:"format"`
 	Primary bool   `json:"primary"`
+	Type    string `json:"type"`
 }
 
 type Joins struct {

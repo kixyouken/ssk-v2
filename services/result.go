@@ -157,9 +157,19 @@ func (s *sResultServices) HandleModelFieldFormat(c *gin.Context, result map[stri
 			v.Format = strings.ReplaceAll(v.Format, "H", "15")
 			v.Format = strings.ReplaceAll(v.Format, "i", "04")
 			v.Format = strings.ReplaceAll(v.Format, "s", "05")
-
-			date, _ := result[v.Field].(time.Time)
-			result[v.Field] = date.Format(v.Format)
+			switch v.Type {
+			case "int":
+				timestamp := result[v.Field].(uint32)
+				if timestamp > 0 {
+					t := time.Unix(int64(timestamp), 0)
+					result[v.Field] = t.Format(v.Format)
+				}
+			case "date", "datetime", "timestamp":
+				if result[v.Field] != nil {
+					date, _ := result[v.Field].(time.Time)
+					result[v.Field] = date.Format(v.Format)
+				}
+			}
 		}
 	}
 

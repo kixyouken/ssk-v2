@@ -8,6 +8,21 @@
         },
         {
             "field": "user_name"
+        },
+        {
+            "field": "birthday",
+            "type": "date",
+            "format": "Y-m-d"
+        },
+        {
+            "field": "deleted_time",
+            "type": "int",
+            "format": "Y-m-d"
+        },
+        {
+            "field": "created_at",
+            "type": "timestamp",
+            "format": "Y-d-d H:i"
         }
     ],
     "joins": [],
