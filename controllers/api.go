@@ -70,12 +70,13 @@ func Read(c *gin.Context) {
 	formJson := services.FormServices.GetFormFile(c, form)
 	modelJson := services.ModelServices.GetModelFile(c, formJson.Model)
 	columns := services.ModelServices.GetModelColumns(c, *modelJson)
+	primary := services.ModelServices.GetModelPrimary(c, *modelJson)
 
 	idStr := c.Param("id")
 	idInt, _ := strconv.Atoi(idStr)
 
 	result := map[string]interface{}{}
-	services.DbService.Read(c, modelJson.Table, idInt, &result, columns)
+	services.DbService.Read(c, modelJson.Table+"."+primary, idInt, &result, columns)
 
 	services.FormServices.GetFormFileQueryAfter(c, result, *formJson)
 	services.ModelServices.GetModelFileQueryAfter(c, result, *modelJson)
@@ -93,6 +94,8 @@ func Save(c *gin.Context) {
 	form := c.Param("form")
 	formJson := services.FormServices.GetFormFile(c, form)
 	modelJson := services.ModelServices.GetModelFile(c, formJson.Model)
+	primary := services.ModelServices.GetModelPrimary(c, *modelJson)
+
 	insert := map[string]interface{}{}
 	c.ShouldBind(&insert)
 	t := time.Now()
@@ -102,10 +105,10 @@ func Save(c *gin.Context) {
 	services.DbService.Save(c, modelJson.Table, insert, []string{"user_name", "created_at", "updated_at"})
 
 	result := map[string]interface{}{}
-	services.DbService.Last(c, modelJson.Table, &result, insert)
+	services.DbService.Last(c, modelJson.Table+"."+primary, &result, insert)
 	c.JSON(200, gin.H{
 		"message": "Save",
-		"id":      result["id"],
+		primary:   result[primary],
 	})
 }
 
@@ -116,11 +119,13 @@ func Update(c *gin.Context) {
 	form := c.Param("form")
 	formJson := services.FormServices.GetFormFile(c, form)
 	modelJson := services.ModelServices.GetModelFile(c, formJson.Model)
+	primary := services.ModelServices.GetModelPrimary(c, *modelJson)
+
 	idStr := c.Param("id")
 	idInt, _ := strconv.Atoi(idStr)
 	updates := map[string]interface{}{}
 	c.ShouldBind(&updates)
-	services.DbService.Update(c, modelJson.Table, idInt, updates)
+	services.DbService.Update(c, modelJson.Table+"."+primary, idInt, updates)
 	c.JSON(200, gin.H{
 		"message": "Update",
 	})
@@ -134,9 +139,11 @@ func Delete(c *gin.Context) {
 	tableJson := services.TableServices.GetTableFile(c, table)
 	modelJson := services.ModelServices.GetModelFile(c, tableJson.Model)
 	columns, deleted := services.ModelServices.GetModelDeleteds(c, *modelJson)
+	primary := services.ModelServices.GetModelPrimary(c, *modelJson)
+
 	idStr := c.Param("id")
 	idInt, _ := strconv.Atoi(idStr)
-	services.DbService.Delete(c, modelJson.Table, idInt, columns, deleted)
+	services.DbService.Delete(c, modelJson.Table+"."+primary, idInt, columns, deleted)
 	c.JSON(200, gin.H{
 		"message": "Delete",
 	})

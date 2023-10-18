@@ -127,6 +127,24 @@ func (s *sModelServices) GetModelOrders(c *gin.Context, model models.ModelJson) 
 	return strings.Join(orders, ",")
 }
 
+// GetModelPrimary 获取 model.json 文件主键信息
+//
+//	@receiver s
+//	@param c
+//	@param model
+//	@return string
+func (s *sModelServices) GetModelPrimary(c *gin.Context, model models.ModelJson) string {
+	primary := "id"
+	for _, v := range model.Columns {
+		if v.Primary {
+			primary = v.Field
+			break
+		}
+	}
+
+	return primary
+}
+
 // GetModelJoinsGroups 获取 model.json 文件 joinGroups 信息
 //
 //	@receiver s

@@ -28,5 +28,11 @@
     ],
     "orders": [],
     "joins": [],
-    "withs": []
+    "withs": [],
+    "deleteds": [
+        {
+            "field": "deleted_at",
+            "value": "datetime"
+        }
+    ]
 }

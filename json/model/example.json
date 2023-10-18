@@ -303,6 +303,10 @@
             "field": "id"
         },
         {
+            "field": "user_id",
+            "primary": true
+        },
+        {
             "field": "email"
         },
         {

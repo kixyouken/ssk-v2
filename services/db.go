@@ -191,7 +191,7 @@ func (s *sDbServices) WithsMin(c *gin.Context, table string, out interface{}, co
 //	@param column
 //	@return error
 func (s *sDbServices) Read(c *gin.Context, table string, id int, out interface{}, column interface{}) error {
-	return db.Table(table).Where(table+".id = ?", id).
+	return db.Table(strings.Split(table, ".")[0]).Where(table+" = ?", id).
 		Scopes(s.FormWheres(c)).
 		Limit(1).
 		Select(column).
@@ -219,7 +219,7 @@ func (s *sDbServices) Save(c *gin.Context, table string, insert map[string]inter
 //	@param where
 //	@return error
 func (s *sDbServices) Last(c *gin.Context, table string, out interface{}, where interface{}) error {
-	return db.Table(table).Where(where).Limit(1).Order("id DESC").Find(out).Error
+	return db.Table(strings.Split(table, ".")[0]).Where(where).Limit(1).Order(table + " DESC").Find(out).Error
 }
 
 // Update 根据 id 更新
@@ -231,7 +231,7 @@ func (s *sDbServices) Last(c *gin.Context, table string, out interface{}, where 
 //	@param updates
 //	@return error
 func (s *sDbServices) Update(c *gin.Context, table string, id int, updates map[string]interface{}) error {
-	return db.Table(table).Where("id = ?", id).Scopes(s.FormWheres(c)).Updates(updates).Error
+	return db.Table(strings.Split(table, ".")[0]).Where(table+" = ?", id).Scopes(s.FormWheres(c)).Updates(updates).Error
 }
 
 // Delete 根据 id 删除
@@ -244,7 +244,7 @@ func (s *sDbServices) Update(c *gin.Context, table string, id int, updates map[s
 //	@param deleted
 //	@return error
 func (s *sDbServices) Delete(c *gin.Context, table string, id int, column interface{}, deleted map[string]interface{}) error {
-	return db.Table(table).Select(column).Where("id = ?", id).Updates(deleted).Error
+	return db.Table(strings.Split(table, ".")[0]).Select(column).Where(table+" = ?", id).Updates(deleted).Error
 }
 
 // GetSql 原生 sql 查询

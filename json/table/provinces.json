@@ -8,27 +8,7 @@
             "value": "notnull"
         }
     ],
-    "wheres_or": [
-        [
-            {
-                "field": "province_id",
-                "match": "in",
-                "value": "110000000000,120000000000"
-            },
-            {
-                "field": "province_name",
-                "match": "like",
-                "value": "江"
-            }
-        ],
-        [
-            {
-                "field": "province_name",
-                "match": "like",
-                "value": "西"
-            }
-        ]
-    ],
+    "wheres_or": [],
     "orders": [
         {
             "field": "id",
