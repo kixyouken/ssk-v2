@@ -112,7 +112,10 @@ func (s *sTableServices) GetTableOrders(c *gin.Context, table tables.TableJson) 
 	model := ModelServices.GetModelFile(c, table.Model)
 	orders := []string{}
 	for _, v := range table.Orders {
-		orders = append(orders, model.Table+"."+v.Field+" "+strings.ToUpper(v.Sort))
+		if !strings.Contains(v.Field, ".") {
+			v.Field = model.Table + "." + v.Field
+		}
+		orders = append(orders, v.Field+" "+strings.ToUpper(v.Sort))
 	}
 
 	return strings.Join(orders, ",")

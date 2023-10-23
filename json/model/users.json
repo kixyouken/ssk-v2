@@ -25,7 +25,36 @@
             "format": "Y-d-d H:i"
         }
     ],
-    "joins": [],
+    "joins": [
+        {
+            "table": "provinces",
+            "foreign": "province_id",
+            "key": "province_id",
+            "join": "left",
+            "columns": [
+                {
+                    "field": "id"
+                },
+                {
+                    "field": "province_id"
+                },
+                {
+                    "field": "province_name"
+                },
+                {
+                    "field": "created_at",
+                    "format": "Y-m-d"
+                }
+            ],
+            "wheres": [
+                {
+                    "field": "deleted_at",
+                    "match": "is",
+                    "value": "null"
+                }
+            ]
+        }
+    ],
     "joins_groups": [],
     "withs": [],
     "withs_groups": [],

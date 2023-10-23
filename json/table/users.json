@@ -1,5 +1,11 @@
 {
     "name": "users表table",
     "model": "users",
-    "withs": []
+    "withs": [],
+    "orders": [
+        {
+            "field": "user_id",
+            "sort": "desc"
+        }
+    ]
 }

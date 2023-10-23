@@ -34,6 +34,16 @@ func Page(c *gin.Context) {
 	orders := services.ModelServices.GetModelOrders(c, *modelJson)
 	joins := services.ModelServices.GetModelJoins(c, *modelJson)
 
+	if modelJson.Joins != nil && len(modelJson.Joins) > 0 {
+		modelJoinColumns := services.ModelServices.GetModelJoinsColumns(c, *modelJson)
+		columns = append(columns, modelJoinColumns...)
+	}
+
+	if tableJson.Orders != nil && len(tableJson.Orders) > 0 {
+		tableOrders := services.TableServices.GetTableOrders(c, *tableJson)
+		orders = strings.Trim(tableOrders+","+orders, ",")
+	}
+
 	groups := []string{}
 	modelJoinsGroupsJoins, modelJoinsGroupsColumns, modelJoinsGroupsGroups, modelJoinsGroupsOrders := services.ModelServices.GetModelJoinsGroups(c, *modelJson)
 	joins = append(joins, modelJoinsGroupsJoins...)
